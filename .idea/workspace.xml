@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="e2b6e2ba-ab40-420c-b092-68f4a48e007b" name="Changes" comment="fix(config): update css path in components configuration&#10;&#10;- Changed css path from src/global.css to global.css&#10;- Removed trailing comma in aliases object&#10;- Fixed json formatting by removing extra closing brace" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ChangesViewManager">
+    <option name="groupingKeys">
+      <option value="directory" />
+      <option value="repository" />
+    </option>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="TypeScript File" />
+      </list>
+    </option>
+  </component>
+  <component name="FormatOnSaveOptions">
+    <option name="myRunOnSave" value="true" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="OptimizeOnSaveOptions">
+    <option name="myRunOnSave" value="true" />
+  </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 6,
+  "fromUser": false
+}]]></component>
+  <component name="ProjectId" id="3IAdQu5o8OdmgX6FIbl5kkanNtT" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "code.cleanup.on.save": "true",
+    "codeWithMe.voiceChat.enabledByDefault": "false",
+    "git-widget-placeholder": "dev",
+    "javascript.preferred.runtime.type.id": "node",
+    "last_opened_file_path": "/Users/imyuanli/jileme-app",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "npm.ios.executor": "Run",
+    "prettierjs.PrettierConfiguration.Package": "/Users/imyuanli/jileme-app/node_modules/prettier",
+    "rearrange.code.on.save": "true",
+    "settings.editor.selected.configurable": "actions.on.save",
+    "ts.external.directory.path": "/Users/imyuanli/jileme-app/node_modules/typescript/lib",
+    "vue.rearranger.settings.migration": "true",
+    "wxn.project": "true"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
+      <recent name="$PROJECT_DIR$/app" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/assets" />
+      <recent name="$PROJECT_DIR$" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="ios" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
+      <package-json value="$PROJECT_DIR$/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="ios" />
+      </scripts>
+      <node-interpreter value="project" />
+      <envs />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="npm.ios" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-js-predefined-d6986cc7102b-31caf2ab9e3c-JavaScript-WS-261.26222.58" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task id="LOCAL-00001" summary="feat(styles): integrate Tailwind CSS with NativeWind for styling&#10;&#10;- Add NativeWind and Tailwind CSS dependencies to project&#10;- Configure Babel preset for NativeWind JSX transformation&#10;- Set up Metro configuration with NativeWind integration&#10;- Add global CSS file with Tailwind directives&#10;- Update app layout to import global styles&#10;- Configure web bundler to Metro in app configuration&#10;- Add NativeWind type definitions for TypeScript support&#10;- Include Tailwind utility classes in main index component&#10;- Add prettier plugin for Tailwind CSS formatting&#10;- Create comprehensive Tailwind configuration files">
+      <option name="closed" value="true" />
+      <created>1787205014462</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1787205014462</updated>
+    </task>
+    <task id="LOCAL-00002" summary="refactor(layout): update project configuration and styling setup&#10;&#10;- Add Prettier configuration file with consistent formatting rules&#10;- Replace AnimatedSplashOverlay with PortalHost in layout component&#10;- Integrate shadcn components configuration with proper aliases&#10;- Add EAS build configuration for development and production builds&#10;- Remove explore.tsx file to clean up unused route&#10;- Update global CSS with layered base styles and dark mode color palette&#10;- Configure Metro bundler with inline rem conversion for NativeWind&#10;- Install new dependencies including portal primitives, class utilities and dev client&#10;- Update Tailwind config with custom color palette and animations&#10;- Create theme utility files for consistent color management&#10;- Add utility function for class merging with Tailwind support">
+      <option name="closed" value="true" />
+      <created>1787206141777</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1787206141777</updated>
+    </task>
+    <task id="LOCAL-00003" summary="chore(project): clean up project structure and remove unused assets&#10;&#10;- Remove Expo icon SVG and icon.json configuration files&#10;- Delete reset-project.js script file&#10;- Simplify _layout.tsx to basic Stack component&#10;- Replace complex index.tsx with simple placeholder component&#10;- Remove multiple UI components including Collapsible, AnimatedIcon, AppTabs, ExternalLink, HintRow&#10;- Delete theme constants and related hook files&#10;- Clean up CSS modules and image assets&#10;- Remove unused theme library file">
+      <option name="closed" value="true" />
+      <created>1787206419600</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1787206419600</updated>
+    </task>
+    <task id="LOCAL-00004" summary="feat(theme): add theme configuration and styling system&#10;&#10;- Add global CSS with Tailwind directives and color variables for light/dark modes&#10;- Create theme configuration file with color definitions for both themes&#10;- Add navigation theme integration with Expo router&#10;- Implement utility function for class name merging&#10;- Update Metro config to use correct global CSS path&#10;- Adjust TypeScript path aliases to reference root directory">
+      <option name="closed" value="true" />
+      <created>1787206561962</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1787206561962</updated>
+    </task>
+    <task id="LOCAL-00005" summary="fix(config): update css path in components configuration&#10;&#10;- Changed css path from src/global.css to global.css&#10;- Removed trailing comma in aliases object&#10;- Fixed json formatting by removing extra closing brace">
+      <option name="closed" value="true" />
+      <created>1787206579371</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1787206579371</updated>
+    </task>
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="e2b6e2ba-ab40-420c-b092-68f4a48e007b" name="Changes" comment="fix(config): update css path in components configuration&#10;&#10;- Changed css path from src/global.css to global.css&#10;- Removed trailing comma in aliases object&#10;- Fixed json formatting by removing extra closing brace" />
+      <created>1787211295812</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1787211295812</updated>
+      <workItem from="1787211297644" duration="701000" />
+    </task>
+    <option name="localTasksCounter" value="6" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="feat(styles): integrate Tailwind CSS with NativeWind for styling&#10;&#10;- Add NativeWind and Tailwind CSS dependencies to project&#10;- Configure Babel preset for NativeWind JSX transformation&#10;- Set up Metro configuration with NativeWind integration&#10;- Add global CSS file with Tailwind directives&#10;- Update app layout to import global styles&#10;- Configure web bundler to Metro in app configuration&#10;- Add NativeWind type definitions for TypeScript support&#10;- Include Tailwind utility classes in main index component&#10;- Add prettier plugin for Tailwind CSS formatting&#10;- Create comprehensive Tailwind configuration files" />
+    <MESSAGE value="refactor(layout): update project configuration and styling setup&#10;&#10;- Add Prettier configuration file with consistent formatting rules&#10;- Replace AnimatedSplashOverlay with PortalHost in layout component&#10;- Integrate shadcn components configuration with proper aliases&#10;- Add EAS build configuration for development and production builds&#10;- Remove explore.tsx file to clean up unused route&#10;- Update global CSS with layered base styles and dark mode color palette&#10;- Configure Metro bundler with inline rem conversion for NativeWind&#10;- Install new dependencies including portal primitives, class utilities and dev client&#10;- Update Tailwind config with custom color palette and animations&#10;- Create theme utility files for consistent color management&#10;- Add utility function for class merging with Tailwind support" />
+    <MESSAGE value="chore(project): clean up project structure and remove unused assets&#10;&#10;- Remove Expo icon SVG and icon.json configuration files&#10;- Delete reset-project.js script file&#10;- Simplify _layout.tsx to basic Stack component&#10;- Replace complex index.tsx with simple placeholder component&#10;- Remove multiple UI components including Collapsible, AnimatedIcon, AppTabs, ExternalLink, HintRow&#10;- Delete theme constants and related hook files&#10;- Clean up CSS modules and image assets&#10;- Remove unused theme library file" />
+    <MESSAGE value="feat(theme): add theme configuration and styling system&#10;&#10;- Add global CSS with Tailwind directives and color variables for light/dark modes&#10;- Create theme configuration file with color definitions for both themes&#10;- Add navigation theme integration with Expo router&#10;- Implement utility function for class name merging&#10;- Update Metro config to use correct global CSS path&#10;- Adjust TypeScript path aliases to reference root directory" />
+    <MESSAGE value="fix(config): update css path in components configuration&#10;&#10;- Changed css path from src/global.css to global.css&#10;- Removed trailing comma in aliases object&#10;- Fixed json formatting by removing extra closing brace" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix(config): update css path in components configuration&#10;&#10;- Changed css path from src/global.css to global.css&#10;- Removed trailing comma in aliases object&#10;- Fixed json formatting by removing extra closing brace" />
+  </component>
+</project>
