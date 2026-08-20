@@ -8,4 +8,21 @@ module.exports = defineConfig([
   {
     ignores: ["dist/*"],
   },
+  {
+    ignores: ["node_modules/**", ".next/**", "out/**", "build/**", "next-env.d.ts"],
+  },
+  {
+    rules: {
+      "@typescript-eslint/no-explicit-any": ["off"],
+      "react/jsx-curly-brace-presence": [
+        "error",
+        {
+          props: "never",
+          children: "never",
+        },
+      ],
+      "react/jsx-boolean-value": ["error", "never"],
+      "react/jsx-curly-spacing": ["error", "never"],
+    },
+  },
 ])
