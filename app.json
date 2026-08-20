@@ -1,14 +1,15 @@
 {
   "expo": {
-    "name": "jileme-app",
-    "slug": "jileme-app",
+    "name": "jileme",
+    "slug": "jileme",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "jilemeapp",
+    "scheme": "jileme",
     "userInterfaceStyle": "automatic",
     "ios": {
-      "icon": "./assets/expo.icon"
+      "icon": "./assets/expo.icon",
+      "bundleIdentifier": "me.jileme.app"
     },
     "android": {
       "adaptiveIcon": {
@@ -37,6 +38,13 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "f9182a56-4b7e-4d78-9264-b9d0b712b931"
+      }
+    },
+    "owner": "calmcat"
   }
 }
