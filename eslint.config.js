@@ -25,4 +25,21 @@ module.exports = defineConfig([
       "react/jsx-curly-spacing": ["error", "never"],
     },
   },
+  {
+    files: ["src/app/**/*.{ts,tsx}"],
+    rules: {
+      "no-restricted-imports": [
+        "error",
+        {
+          paths: [
+            {
+              name: "react-native",
+              importNames: ["Text"],
+              message: "Use @/components/ui/text instead.",
+            },
+          ],
+        },
+      ],
+    },
+  },
 ])
