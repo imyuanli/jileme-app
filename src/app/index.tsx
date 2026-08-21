@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { RefreshControl, ScrollView, useColorScheme, View } from "react-native"
+import { ScrollView, View } from "react-native"
 import useSWR, { useSWRConfig } from "swr"
 
 import { AccountingHomeBlock } from "@/components/home/accounting-home-block"
@@ -11,7 +11,6 @@ import { AppSymbol } from "@/components/ui/symbol"
 import { Text } from "@/components/ui/text"
 import { getTodayDateKey } from "@/lib/date"
 import { fetcher, RequestError } from "@/lib/request"
-import { THEME } from "@/lib/theme"
 import type { HomeBlock, HomeDayData, HomeSlot } from "@/types/home"
 
 function getBlocksBySlot(blocks: HomeBlock[], slot: HomeSlot) {
@@ -56,7 +55,6 @@ function HomeSection({ title, blocks }: { title: string; blocks: HomeBlock[] }) 
 }
 
 export default function HomeScreen() {
-  const colorScheme = useColorScheme() === "dark" ? "dark" : "light"
   const { mutate: mutateCache } = useSWRConfig()
   const todayKey = getTodayDateKey()
   const [selectedDateKey, setSelectedDateKey] = useState(todayKey)
@@ -66,6 +64,7 @@ export default function HomeScreen() {
     { keepPreviousData: true }
   )
   const isToday = selectedDateKey === todayKey
+  const isContentLoading = isLoading || isValidating || data?.dateKey !== selectedDateKey
   const blocks = data?.dateKey === selectedDateKey ? data.blocks : []
   const focusBlocks = getBlocksBySlot(blocks, "focus")
   const recordBlocks = getBlocksBySlot(blocks, "records")
@@ -81,15 +80,6 @@ export default function HomeScreen() {
       className="bg-background flex-1"
       contentInsetAdjustmentBehavior="automatic"
       contentContainerStyle={{ flexGrow: 1 }}
-      alwaysBounceVertical
-      refreshControl={
-        <RefreshControl
-          refreshing={isValidating && !isLoading}
-          onRefresh={() => void mutate()}
-          tintColor={THEME[colorScheme].primary}
-          colors={[THEME[colorScheme].primary]}
-        />
-      }
     >
       <View className="border-border border-b p-4">
         <CalendarControls
@@ -119,7 +109,7 @@ export default function HomeScreen() {
               <Text>重新加载</Text>
             </Button>
           </Empty>
-        ) : isLoading || data?.dateKey !== selectedDateKey ? (
+        ) : isContentLoading ? (
           <View className="gap-5">
             <Skeleton className="h-24 w-full rounded-3xl" />
             <Skeleton className="h-48 w-full rounded-3xl" />

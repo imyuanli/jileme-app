@@ -44,21 +44,20 @@ export function CalendarControls({
   return (
     <View className="gap-3" accessibilityLabel="日期选择">
       <View className="flex-row items-center justify-between gap-2">
-        <View className="min-w-0 flex-1 flex-row items-center gap-1">
-          <Text className="text-xl font-semibold">{dateTitle}</Text>
-          {!isToday ? (
-            <Button
-              variant="ghost"
-              size="sm"
-              onPress={() => onDateChange(todayKey)}
-              accessibilityLabel="回到今日"
-            >
-              <Text>今天</Text>
-            </Button>
-          ) : null}
+        <View className="min-w-0 flex-1">
+          <Text className="text-2xl font-semibold">{dateTitle}</Text>
         </View>
 
         <View className="shrink-0 flex-row items-center gap-1.5">
+          {!isToday ? (
+            <Button
+              variant="ghost"
+              onPress={() => onDateChange(todayKey)}
+              accessibilityLabel="回到今天"
+            >
+              <Text>回到今天</Text>
+            </Button>
+          ) : null}
           <Button
             variant="outline"
             size="icon"
