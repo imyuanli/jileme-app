@@ -91,7 +91,7 @@ export default function HomeScreen() {
         />
       }
     >
-      <View className="border-border border-b px-4 py-4">
+      <View className="border-border border-b p-4">
         <CalendarControls
           onDateChange={setSelectedDateKey}
           selectedDateKey={selectedDateKey}
@@ -99,7 +99,7 @@ export default function HomeScreen() {
         />
       </View>
 
-      <View className="px-4 py-5">
+      <View className="p-4">
         {error ? (
           <Empty className="min-h-72">
             <EmptyMedia>

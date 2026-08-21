@@ -25,9 +25,10 @@ const toggleVariants = cva(
         ),
       },
       size: {
-        default: "h-10 min-w-10 px-2.5 sm:h-9 sm:min-w-9 sm:px-2",
-        sm: "h-9 min-w-9 px-2 sm:h-8 sm:min-w-8 sm:px-1.5",
-        lg: "h-11 min-w-11 px-3 sm:h-10 sm:min-w-10 sm:px-2.5",
+        xs: "h-8 min-w-8 px-1.5",
+        sm: "h-9 min-w-9 px-2",
+        default: "h-10 min-w-10 px-2.5",
+        lg: "h-11 min-w-11 px-3",
       },
     },
     defaultVariants: {
@@ -41,8 +42,11 @@ function Toggle({
   className,
   variant,
   size,
+  hitSlop,
   ...props
 }: React.ComponentProps<typeof TogglePrimitive.Root> & VariantProps<typeof toggleVariants>) {
+  const resolvedSize = size ?? "default"
+
   return (
     <TextClassContext.Provider
       value={cn(
@@ -55,11 +59,12 @@ function Toggle({
     >
       <TogglePrimitive.Root
         className={cn(
-          toggleVariants({ variant, size }),
+          toggleVariants({ variant, size: resolvedSize }),
           props.disabled && "opacity-50",
           props.pressed && "bg-accent",
           className
         )}
+        hitSlop={hitSlop ?? { xs: 6, sm: 4, default: 2, lg: 0 }[resolvedSize]}
         {...props}
       />
     </TextClassContext.Provider>

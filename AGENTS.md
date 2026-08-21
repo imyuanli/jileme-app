@@ -80,6 +80,10 @@
 - 使用基础组件时，默认不得在调用处覆盖颜色、高度、内边距、字号、圆角、阴影、边框及 pressed/disabled 状态等视觉规格。
 - 确需视觉差异时，优先扩展基础组件的 `variant`、`size` 或状态契约；调用处主要补充宽度、外层间距、定位等布局样式。
 - `Input`、`Select`、`Textarea`、`Button` 等同类控件必须保持统一规格。
+- 横向操作控件统一使用 Native 尺寸矩阵：`xs` 为 32pt、`sm` 为 36pt、`default` 为 40pt、`lg` 为 44pt；适用范围包括 `Button`、`Input`、`SelectTrigger`、`TabsList`/`TabsTrigger`、`Toggle`/`ToggleGroupItem` 和 `Menubar`/`MenubarTrigger`。
+- `Button` 的文字与图标尺寸必须成对等高：`xs`/`icon-xs`、`sm`/`icon-sm`、`default`/`icon`、`lg`/`icon-lg`；同一工具栏中的控件通过选择相同语义尺寸对齐，不在调用处覆盖高度。
+- 基础组件的 `size` 是稳定的语义契约，禁止使用 `sm:`、`md:` 等屏幕断点自动改变组件自身高度、最小宽度或内部 padding；紧凑尺寸所需的触摸区域由基础组件处理，并允许调用者通过原生行为属性显式覆盖。
+- `Checkbox`、`Radio`、`Switch`、`Badge` 和 `Textarea` 使用各自的独立规格，不强行套用横向操作控件高度矩阵。
 - 组件优先通过 `children` 组合内容，避免不断增加只描述内容结构的专用 props。
 - 合并或条件拼接 `className` 时使用 `cn()`（来自 `@/lib/utils`），不要手动拼接复杂字符串。
 - 可交互组件必须覆盖 pressed、disabled、loading 等必要状态，并提供正确的 `accessibilityRole`、label 和可读反馈。

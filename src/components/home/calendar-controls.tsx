@@ -52,7 +52,6 @@ export function CalendarControls({
               size="sm"
               onPress={() => onDateChange(todayKey)}
               accessibilityLabel="回到今日"
-              hitSlop={8}
             >
               <Text>今天</Text>
             </Button>

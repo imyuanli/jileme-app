@@ -40,10 +40,14 @@ const buttonVariants = cva(
         link: "",
       },
       size: {
-        default: cn("h-10 px-4 py-2 sm:h-9", Platform.select({ web: "has-[>svg]:px-3" })),
-        sm: cn("h-9 gap-1.5 rounded-md px-3 sm:h-8", Platform.select({ web: "has-[>svg]:px-2.5" })),
-        lg: cn("h-11 rounded-md px-6 sm:h-10", Platform.select({ web: "has-[>svg]:px-4" })),
-        icon: "h-10 w-10 sm:h-9 sm:w-9",
+        default: cn("h-10 px-4 py-2", Platform.select({ web: "has-[>svg]:px-3" })),
+        xs: cn("h-8 gap-1 rounded-md px-2", Platform.select({ web: "has-[>svg]:px-1.5" })),
+        sm: cn("h-9 gap-1.5 rounded-md px-3", Platform.select({ web: "has-[>svg]:px-2.5" })),
+        lg: cn("h-11 rounded-md px-6", Platform.select({ web: "has-[>svg]:px-4" })),
+        icon: "size-10",
+        "icon-xs": "size-8 rounded-md",
+        "icon-sm": "size-9 rounded-md",
+        "icon-lg": "size-11 rounded-md",
       },
     },
     defaultVariants: {
@@ -76,9 +80,13 @@ const buttonTextVariants = cva(
       },
       size: {
         default: "",
+        xs: "text-xs",
         sm: "",
         lg: "",
         icon: "",
+        "icon-xs": "",
+        "icon-sm": "",
+        "icon-lg": "",
       },
     },
     defaultVariants: {
@@ -92,11 +100,29 @@ type ButtonProps = React.ComponentProps<typeof Pressable> &
   React.RefAttributes<typeof Pressable> &
   VariantProps<typeof buttonVariants>
 
-function Button({ className, variant, size, ...props }: ButtonProps) {
+const buttonHitSlop = {
+  xs: 6,
+  sm: 4,
+  default: 2,
+  lg: 0,
+  "icon-xs": 6,
+  "icon-sm": 4,
+  icon: 2,
+  "icon-lg": 0,
+} as const
+
+function Button({ className, variant, size, hitSlop, ...props }: ButtonProps) {
+  const resolvedSize = size ?? "default"
+
   return (
-    <TextClassContext.Provider value={buttonTextVariants({ variant, size })}>
+    <TextClassContext.Provider value={buttonTextVariants({ variant, size: resolvedSize })}>
       <Pressable
-        className={cn(props.disabled && "opacity-50", buttonVariants({ variant, size }), className)}
+        className={cn(
+          props.disabled && "opacity-50",
+          buttonVariants({ variant, size: resolvedSize }),
+          className
+        )}
+        hitSlop={hitSlop ?? buttonHitSlop[resolvedSize]}
         role="button"
         {...props}
       />

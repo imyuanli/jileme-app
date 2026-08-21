@@ -50,6 +50,7 @@ function ToggleGroupItem({
   size,
   isFirst,
   isLast,
+  hitSlop,
   ...props
 }: React.ComponentProps<typeof ToggleGroupPrimitive.Item> &
   VariantProps<typeof toggleVariants> & {
@@ -58,6 +59,7 @@ function ToggleGroupItem({
   }) {
   const context = useToggleGroupContext()
   const { value } = ToggleGroupPrimitive.useRootContext()
+  const resolvedSize = context.size ?? size ?? "default"
 
   return (
     <TextClassContext.Provider
@@ -72,7 +74,7 @@ function ToggleGroupItem({
         className={cn(
           toggleVariants({
             variant: context.variant || variant,
-            size: context.size || size,
+            size: resolvedSize,
           }),
           props.disabled && "opacity-50",
           ToggleGroupPrimitive.utils.getIsSelected(value, props.value) && "bg-accent",
@@ -86,6 +88,15 @@ function ToggleGroupItem({
           }),
           className
         )}
+        hitSlop={
+          hitSlop ??
+          {
+            xs: { top: 6, bottom: 6, left: 0, right: 0 },
+            sm: { top: 4, bottom: 4, left: 0, right: 0 },
+            default: { top: 2, bottom: 2, left: 0, right: 0 },
+            lg: 0,
+          }[resolvedSize]
+        }
         {...props}
       >
         {children}

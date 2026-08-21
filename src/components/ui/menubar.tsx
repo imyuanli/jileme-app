@@ -4,6 +4,7 @@ import { TextClassContext } from "@/components/ui/text"
 import { cn } from "@/lib/utils"
 import * as MenubarPrimitive from "@rn-primitives/menubar"
 import { Portal } from "@rn-primitives/portal"
+import { cva, type VariantProps } from "class-variance-authority"
 import { Check, ChevronDown, ChevronRight, ChevronUp } from "lucide-react-native"
 import * as React from "react"
 import {
@@ -30,14 +31,37 @@ const MenubarRadioGroup = MenubarPrimitive.RadioGroup
 
 const FullWindowOverlay = Platform.OS === "ios" ? RNFullWindowOverlay : React.Fragment
 
+const menubarVariants = cva(
+  "bg-background border-border flex flex-row items-center gap-1 rounded-md border p-1 shadow-sm shadow-black/5",
+  {
+    variants: {
+      size: {
+        xs: "h-8",
+        sm: "h-9",
+        default: "h-10",
+        lg: "h-11",
+      },
+    },
+    defaultVariants: {
+      size: "default",
+    },
+  }
+)
+
+type MenubarSize = NonNullable<VariantProps<typeof menubarVariants>["size"]>
+
+const MenubarSizeContext = React.createContext<MenubarSize>("default")
+
 function Menubar({
   className,
   value: valueProp,
   onValueChange: onValueChangeProp,
+  size,
   ...props
-}: React.ComponentProps<typeof MenubarPrimitive.Root>) {
+}: React.ComponentProps<typeof MenubarPrimitive.Root> & VariantProps<typeof menubarVariants>) {
   const id = React.useId()
   const [value, setValue] = React.useState<string | undefined>(undefined)
+  const resolvedSize = size ?? "default"
 
   function closeMenu() {
     if (onValueChangeProp) {
@@ -54,25 +78,26 @@ function Menubar({
           <Pressable onPress={closeMenu} style={StyleSheet.absoluteFill} />
         </Portal>
       ) : null}
-      <MenubarPrimitive.Root
-        className={cn(
-          "bg-background border-border flex h-10 flex-row items-center gap-1 rounded-md border p-1 shadow-sm shadow-black/5 sm:h-9",
-          className
-        )}
-        value={value ?? valueProp}
-        onValueChange={onValueChangeProp ?? setValue}
-        {...props}
-      />
+      <MenubarSizeContext.Provider value={resolvedSize}>
+        <MenubarPrimitive.Root
+          className={cn(menubarVariants({ size: resolvedSize }), className)}
+          value={value ?? valueProp}
+          onValueChange={onValueChangeProp ?? setValue}
+          {...props}
+        />
+      </MenubarSizeContext.Provider>
     </>
   )
 }
 
 function MenubarTrigger({
   className,
+  hitSlop,
   ...props
 }: React.ComponentProps<typeof MenubarPrimitive.Trigger>) {
   const { value } = MenubarPrimitive.useRootContext()
   const { value: itemValue } = MenubarPrimitive.useMenuContext()
+  const size = React.useContext(MenubarSizeContext)
 
   return (
     <TextClassContext.Provider
@@ -83,13 +108,22 @@ function MenubarTrigger({
     >
       <MenubarPrimitive.Trigger
         className={cn(
-          "group flex items-center rounded-md px-2 py-1.5 sm:py-1",
+          "group flex self-stretch items-center rounded-md px-2",
           Platform.select({
             web: "focus:bg-accent focus:text-accent-foreground cursor-default outline-none",
           }),
           value === itemValue && "bg-accent",
           className
         )}
+        hitSlop={
+          hitSlop ??
+          {
+            xs: { top: 6, bottom: 6, left: 0, right: 0 },
+            sm: { top: 4, bottom: 4, left: 0, right: 0 },
+            default: { top: 2, bottom: 2, left: 0, right: 0 },
+            lg: 0,
+          }[size]
+        }
         {...props}
       />
     </TextClassContext.Provider>
@@ -360,4 +394,5 @@ export {
   MenubarSubContent,
   MenubarSubTrigger,
   MenubarTrigger,
+  menubarVariants,
 }
