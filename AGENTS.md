@@ -30,9 +30,9 @@
 
 ## 4. 目录与职责边界
 
-- `src/app/**`：Expo Router 路由、页面组合和导航配置；保持薄层，不承载通用请求解析、认证细节或可复用的大段 JSX。
+- `src/app/**`：Expo Router 路由、页面组合和导航配置；页面专属的状态、请求和 JSX 默认直接保留在对应路由文件中，不为了形式上的“薄层”再创建只做透传的一次性组件。
 - `src/components/ui/**`：现有基础 UI 组件库；优先复用和扩展，不在页面重复实现同类基础组件。
-- `src/components/**`：可复用业务组件；按业务域组织，避免无业务含义的过度抽象。
+- `src/components/**`：仅放真实复用、独立复杂交互或边界清晰的业务组件；不得仅因代码位于页面中就提前拆文件。
 - `src/lib/**`：主题、工具函数以及后续统一请求和 API 契约等非 UI 基础设施。
 - `src/global.css` 与 `src/lib/theme.ts`：当前主题的唯一来源，不在旁边建立第二套颜色或主题系统。
 - `assets/**`：图片、启动图、应用图标和其他静态资源。
@@ -41,6 +41,7 @@
 ## 5. Expo Router 与导航规则
 
 - 使用 Expo Router 文件路由，不另外引入一套平行导航系统。
+- 只有多个路由确实共享导航结构、布局或访问语义时才创建 `(group)` 和组级 `_layout.tsx`；不得为单一路由或未来可能出现的页面预建路由组。
 - 页面标题、返回行为和顶部导航优先由 `Stack` 等导航配置负责，不在页面内重复模拟导航栏。
 - 尊重 `app.json` 中启用的 `typedRoutes`，不要用无类型字符串或类型断言绕过路由检查。
 - 根布局必须维持全局样式、`ThemeProvider`、`StatusBar`、`Stack` 和 `PortalHost` 的正确关系。
@@ -55,8 +56,10 @@
 - API 基础地址使用非敏感的 `EXPO_PUBLIC_API_URL` 等客户端配置；环境变量修改后应重启开发服务器。
 - `EXPO_PUBLIC_` 变量会进入客户端包，只能存放可公开配置，禁止放置数据库密码、service role key、私有 API key 或其他密钥。
 - 引入请求基础设施时统一收口到 `src/lib/request.ts`，封装基础地址、headers、JSON 解析、错误处理、取消请求和鉴权失败处理。
-- 查询类数据优先复用已安装的 SWR；mutation 使用 SWR mutation 或基于统一请求层的业务封装，不在组件中重复裸写请求逻辑。
-- 业务 hooks 可按模块放在 `src/hooks/**` 或对应业务目录，底层请求必须复用统一请求层。
+- 查询类数据必须尽量保持 Web 的直接调用形态：`useSWR<T>(key, fetcher.get)`；mutation 使用 `useSWRMutation(key, fetcher.post)`，不得为普通接口再包一层 repository、service、请求类或重复缓存层。
+- `src/lib/request.ts` 只负责绝对 API 地址、headers、body、响应解析和错误归一化，不承载业务状态、页面状态或 SWR 缓存。
+- 只有与 Web 一致且确有跨页面组合价值的能力（例如当前用户会话）才允许提取业务 hook；不得用 hook 隐藏普通页面的 SWR key、请求参数或刷新行为。
+- 不引入 React Query、另一套全局请求状态或自行实现的缓存机制与 SWR 并存。
 - 请求参数和返回数据必须有明确的 TypeScript 业务契约，集中在 `src/lib/api/**` 或等价的业务模块，并与 Web API 的实际返回保持一致。
 - 错误处理必须区分网络错误、HTTP 错误、业务错误和鉴权失败；客户端只展示可理解的消息，不暴露服务端原始错误、Token、Cookie、密钥或数据库细节。
 
@@ -71,6 +74,7 @@
 ## 8. UI 组件复用规则
 
 - 通用跨平台 UI 优先复用 `src/components/ui/**` 中已有组件。
+- 不创建只接收一次 props、只转发到另一个组件或只包一层 JSX 的业务组件；单页面使用的局部渲染优先写成页面文件内的函数。
 - Picker、Switch、Menu、Sheet 等需要系统级原生体验的控件，先查阅 SDK 56 文档并评估 `@expo/ui` 是否有合适实现，再考虑 React Native 内置或新增社区依赖。
 - 不为了统一表面形式重复包装已经具备平台设计语言的原生控件。
 - 使用基础组件时，默认不得在调用处覆盖颜色、高度、内边距、字号、圆角、阴影、边框及 pressed/disabled 状态等视觉规格。
