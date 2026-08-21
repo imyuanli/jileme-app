@@ -1,6 +1,6 @@
 import "@/global.css"
 import { PortalHost } from "@rn-primitives/portal"
-import { Stack, ThemeProvider } from "expo-router"
+import { Stack, ThemeProvider, usePathname } from "expo-router"
 import { StatusBar } from "expo-status-bar"
 import { useColorScheme, View } from "react-native"
 import useSWR from "swr"
@@ -14,6 +14,13 @@ import type { CurrentUser } from "@/types/user"
 
 type SessionGateProps = {
   children: (isAuthenticated: boolean) => React.ReactNode
+}
+
+const TAB_TITLES: Record<string, string> = {
+  "/": "首页",
+  "/modules": "模块",
+  "/insights": "洞察",
+  "/profile": "我的",
 }
 
 function SessionGate({ children }: SessionGateProps) {
@@ -52,6 +59,7 @@ function SessionGate({ children }: SessionGateProps) {
 
 export default function RootLayout() {
   const colorScheme = useColorScheme() === "dark" ? "dark" : "light"
+  const pathname = usePathname()
 
   return (
     <ThemeProvider value={NAV_THEME[colorScheme]}>
@@ -64,9 +72,9 @@ export default function RootLayout() {
             </Stack.Protected>
             <Stack.Protected guard={isAuthenticated}>
               <Stack.Screen
-                name="index"
+                name="(tabs)"
                 options={{
-                  title: "首页",
+                  title: TAB_TITLES[pathname] ?? "首页",
                   headerStyle: { backgroundColor: THEME[colorScheme].background },
                   headerTintColor: THEME[colorScheme].foreground,
                   headerShadowVisible: false,
