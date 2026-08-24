@@ -1,50 +1,70 @@
-import type { AccountingType } from "@/types/accounting"
+import type { AccountingPeriod, AccountingType } from "@/types/accounting"
 
-const ACCOUNTING_CATEGORY_LABELS: Record<AccountingType, Record<string, string>> = {
-  expense: {
-    food: "餐饮",
-    shopping: "购物",
-    daily: "日用",
-    transport: "交通",
-    vegetables: "蔬菜",
-    fruit: "水果",
-    snacks: "零食",
-    sports: "运动",
-    entertainment: "娱乐",
-    communication: "通讯",
-    clothing: "服饰",
-    beauty: "美容",
-    housing: "住房",
-    home: "居家",
-    children: "孩子",
-    elders: "长辈",
-    social: "社交",
-    travel: "旅行",
-    tobacco_alcohol: "烟酒",
-    digital: "数码",
-    car: "汽车",
-    medical: "医疗",
-    books: "书籍",
-    study: "学习",
-    pets: "宠物",
-    cash_gift: "礼金",
-    gift: "礼物",
-    office: "办公",
-    repair: "维修",
-    donation: "捐赠",
-    lottery: "彩票",
-    family_friends: "亲友",
-    delivery: "快递",
-  },
-  income: {
-    salary: "工资",
-    part_time: "兼职",
-    investment: "理财",
-    cash_gift: "礼金",
-    other: "其它",
-  },
+export type AccountingCategory = {
+  code: string
+  label: string
+}
+
+export const ACCOUNTING_CATEGORIES: Record<AccountingType, AccountingCategory[]> = {
+  expense: [
+    { code: "food", label: "餐饮" },
+    { code: "shopping", label: "购物" },
+    { code: "daily", label: "日用" },
+    { code: "transport", label: "交通" },
+    { code: "vegetables", label: "蔬菜" },
+    { code: "fruit", label: "水果" },
+    { code: "snacks", label: "零食" },
+    { code: "sports", label: "运动" },
+    { code: "entertainment", label: "娱乐" },
+    { code: "communication", label: "通讯" },
+    { code: "clothing", label: "服饰" },
+    { code: "beauty", label: "美容" },
+    { code: "housing", label: "住房" },
+    { code: "home", label: "居家" },
+    { code: "children", label: "孩子" },
+    { code: "elders", label: "长辈" },
+    { code: "social", label: "社交" },
+    { code: "travel", label: "旅行" },
+    { code: "tobacco_alcohol", label: "烟酒" },
+    { code: "digital", label: "数码" },
+    { code: "car", label: "汽车" },
+    { code: "medical", label: "医疗" },
+    { code: "books", label: "书籍" },
+    { code: "study", label: "学习" },
+    { code: "pets", label: "宠物" },
+    { code: "cash_gift", label: "礼金" },
+    { code: "gift", label: "礼物" },
+    { code: "office", label: "办公" },
+    { code: "repair", label: "维修" },
+    { code: "donation", label: "捐赠" },
+    { code: "lottery", label: "彩票" },
+    { code: "family_friends", label: "亲友" },
+    { code: "delivery", label: "快递" },
+  ],
+  income: [
+    { code: "salary", label: "工资" },
+    { code: "part_time", label: "兼职" },
+    { code: "investment", label: "理财" },
+    { code: "cash_gift", label: "礼金" },
+    { code: "other", label: "其它" },
+  ],
+}
+
+export const ACCOUNTING_PERIODS: { value: AccountingPeriod; label: string }[] = [
+  { value: "day", label: "今日" },
+  { value: "week", label: "本周" },
+  { value: "month", label: "本月" },
+]
+
+export const ACCOUNTING_CATEGORY_CODES: Record<AccountingType, Set<string>> = {
+  expense: new Set(ACCOUNTING_CATEGORIES.expense.map((category) => category.code)),
+  income: new Set(ACCOUNTING_CATEGORIES.income.map((category) => category.code)),
+}
+
+export function getAccountingCategory(type: AccountingType, code: string) {
+  return ACCOUNTING_CATEGORIES[type].find((category) => category.code === code)
 }
 
 export function getAccountingCategoryLabel(type: AccountingType, code: string) {
-  return ACCOUNTING_CATEGORY_LABELS[type][code] ?? "其它"
+  return getAccountingCategory(type, code)?.label ?? "其它"
 }

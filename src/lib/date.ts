@@ -1,6 +1,8 @@
 export type CalendarMode = "week" | "month"
 
 const DATE_KEY_PATTERN = /^(\d{4})-(\d{2})-(\d{2})$/
+const MONTH_KEY_PATTERN = /^(\d{4})-(\d{2})$/
+const WEEKDAY_LABELS = ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"]
 
 function createLocalDate(year: number, monthIndex: number, day: number) {
   return new Date(year, monthIndex, day, 12)
@@ -18,6 +20,10 @@ export function getTodayDateKey() {
   return formatDateKey(new Date())
 }
 
+export function getCurrentMonthKey() {
+  return getTodayDateKey().slice(0, 7)
+}
+
 export function parseDateKey(dateKey: string) {
   const match = DATE_KEY_PATTERN.exec(dateKey)
   if (!match) throw new Error(`无效日期：${dateKey}`)
@@ -32,6 +38,40 @@ export function parseDateKey(dateKey: string) {
   }
 
   return date
+}
+
+function parseMonthKey(monthKey: string) {
+  const match = MONTH_KEY_PATTERN.exec(monthKey)
+  if (!match) throw new Error(`无效月份：${monthKey}`)
+
+  const year = Number(match[1])
+  const monthIndex = Number(match[2]) - 1
+  const date = createLocalDate(year, monthIndex, 1)
+
+  if (date.getFullYear() !== year || date.getMonth() !== monthIndex) {
+    throw new Error(`无效月份：${monthKey}`)
+  }
+
+  return date
+}
+
+export function moveMonthKey(monthKey: string, direction: -1 | 1) {
+  const date = parseMonthKey(monthKey)
+  const nextMonth = createLocalDate(date.getFullYear(), date.getMonth() + direction, 1)
+
+  return formatDateKey(nextMonth).slice(0, 7)
+}
+
+export function formatMonthTitle(monthKey: string) {
+  const date = parseMonthKey(monthKey)
+
+  return `${date.getFullYear()}年${date.getMonth() + 1}月`
+}
+
+export function formatAccountingDateTitle(dateKey: string) {
+  const date = parseDateKey(dateKey)
+
+  return `${date.getMonth() + 1}月${date.getDate()}日 ${WEEKDAY_LABELS[date.getDay()]}`
 }
 
 function addDays(date: Date, amount: number) {

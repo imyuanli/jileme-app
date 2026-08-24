@@ -80,6 +80,16 @@ export default function RootLayout() {
                   headerShadowVisible: false,
                 }}
               />
+              <Stack.Screen
+                name="accounting"
+                options={{
+                  title: "记账",
+                  headerBackTitle: "返回",
+                  headerStyle: { backgroundColor: THEME[colorScheme].background },
+                  headerTintColor: THEME[colorScheme].foreground,
+                  headerShadowVisible: false,
+                }}
+              />
             </Stack.Protected>
           </Stack>
         )}
