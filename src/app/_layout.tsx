@@ -12,6 +12,10 @@ import { fetcher, RequestError } from "@/lib/request"
 import { NAV_THEME, THEME } from "@/lib/theme"
 import type { CurrentUser } from "@/types/user"
 
+export const unstable_settings = {
+  initialRouteName: "(tabs)",
+}
+
 type SessionGateProps = {
   children: (isAuthenticated: boolean) => React.ReactNode
 }
@@ -86,6 +90,17 @@ export default function RootLayout() {
                 name="accounting"
                 options={{
                   headerShown: false,
+                }}
+              />
+              <Stack.Screen
+                name="modules/[moduleId]"
+                options={{
+                  title: "模块",
+                  headerStyle: { backgroundColor: THEME[colorScheme].background },
+                  headerTintColor: THEME[colorScheme].foreground,
+                  headerShadowVisible: false,
+                  headerTitleAlign: "center",
+                  headerBackButtonDisplayMode: "minimal",
                 }}
               />
             </Stack.Protected>
