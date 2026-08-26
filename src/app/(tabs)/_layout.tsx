@@ -56,7 +56,7 @@ export default function TabsLayout() {
   const colorScheme = useColorScheme() === "dark" ? "dark" : "light"
   const router = useRouter()
   const quickAddSheetRef = useRef<BottomSheetModal>(null)
-  const pendingRouteRef = useRef<"/accounting" | null>(null)
+  const pendingRouteRef = useRef<"/accounting/entry" | null>(null)
 
   function presentQuickAdd() {
     quickAddSheetRef.current?.present()
@@ -67,7 +67,7 @@ export default function TabsLayout() {
   }
 
   function openAccounting() {
-    pendingRouteRef.current = "/accounting"
+    pendingRouteRef.current = "/accounting/entry"
     quickAddSheetRef.current?.dismiss()
   }
 

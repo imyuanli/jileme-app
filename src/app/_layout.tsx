@@ -78,16 +78,14 @@ export default function RootLayout() {
                   headerStyle: { backgroundColor: THEME[colorScheme].background },
                   headerTintColor: THEME[colorScheme].foreground,
                   headerShadowVisible: false,
+                  headerTitleAlign: "center",
+                  headerBackButtonDisplayMode: "minimal",
                 }}
               />
               <Stack.Screen
                 name="accounting"
                 options={{
-                  title: "记账",
-                  headerBackTitle: "返回",
-                  headerStyle: { backgroundColor: THEME[colorScheme].background },
-                  headerTintColor: THEME[colorScheme].foreground,
-                  headerShadowVisible: false,
+                  headerShown: false,
                 }}
               />
             </Stack.Protected>

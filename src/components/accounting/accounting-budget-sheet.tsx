@@ -21,6 +21,12 @@ import type {
   UpdateAccountingBudgetRequest,
   UpdateAccountingBudgetResponse,
 } from "@/types/accounting"
+import type {
+  DeleteLedgerBudgetRequest,
+  DeleteLedgerBudgetResponse,
+  UpdateLedgerBudgetRequest,
+  UpdateLedgerBudgetResponse,
+} from "@/types/accounting-ledgers"
 
 export type AccountingBudgetSheetMethods = {
   present: (budget: AccountingBudgetStatus | null) => void
@@ -28,6 +34,7 @@ export type AccountingBudgetSheetMethods = {
 }
 
 type AccountingBudgetSheetProps = {
+  ledgerId?: string
   onChanged?: () => void
 }
 
@@ -38,7 +45,7 @@ function getErrorMessage(error: unknown, fallback: string) {
 export const AccountingBudgetSheet = forwardRef<
   AccountingBudgetSheetMethods,
   AccountingBudgetSheetProps
->(function AccountingBudgetSheet({ onChanged }, ref) {
+>(function AccountingBudgetSheet({ ledgerId, onChanged }, ref) {
   const colorScheme = useColorScheme() === "dark" ? "dark" : "light"
   const bottomSheetRef = useRef<BottomSheetModal>(null)
   const { mutate } = useSWRConfig()
@@ -59,13 +66,35 @@ export const AccountingBudgetSheet = forwardRef<
     string,
     undefined
   >("/api/accounting/budget/delete", fetcher.post)
+  const { trigger: updateLedgerBudget, isMutating: isUpdatingLedger } = useSWRMutation<
+    UpdateLedgerBudgetResponse,
+    RequestError,
+    string,
+    UpdateLedgerBudgetRequest
+  >("/api/accounting/ledgers/budget/update", fetcher.post)
+  const { trigger: deleteLedgerBudget, isMutating: isDeletingLedger } = useSWRMutation<
+    DeleteLedgerBudgetResponse,
+    RequestError,
+    string,
+    DeleteLedgerBudgetRequest
+  >("/api/accounting/ledgers/budget/delete", fetcher.post)
 
-  const isBusy = isUpdating || isDeleting
+  const isBusy = isUpdating || isDeleting || isUpdatingLedger || isDeletingLedger
 
   async function refreshBudgetData() {
     await Promise.allSettled([
       mutate(
         (key) => typeof key === "string" && key.startsWith("/api/accounting/overview?"),
+        undefined,
+        { revalidate: true }
+      ),
+      mutate(
+        (key) => typeof key === "string" && key.startsWith("/api/accounting/ledgers/detail?"),
+        undefined,
+        { revalidate: true }
+      ),
+      mutate(
+        (key) => typeof key === "string" && key.startsWith("/api/accounting/ledgers/settings?"),
         undefined,
         { revalidate: true }
       ),
@@ -115,7 +144,13 @@ export const AccountingBudgetSheet = forwardRef<
   async function handleSave() {
     setErrorMessage(null)
     try {
-      await updateBudget({ period, amountCents: validateAmount() })
+      const amountCents = validateAmount()
+
+      if (ledgerId) {
+        await updateLedgerBudget({ ledgerId, period, amountCents })
+      } else {
+        await updateBudget({ period, amountCents })
+      }
       await refreshBudgetData()
       bottomSheetRef.current?.dismiss()
     } catch (error) {
@@ -127,7 +162,11 @@ export const AccountingBudgetSheet = forwardRef<
   async function handleDelete() {
     setErrorMessage(null)
     try {
-      await deleteBudget()
+      if (ledgerId) {
+        await deleteLedgerBudget({ ledgerId })
+      } else {
+        await deleteBudget()
+      }
       await refreshBudgetData()
       bottomSheetRef.current?.dismiss()
     } catch (error) {
@@ -226,8 +265,8 @@ export const AccountingBudgetSheet = forwardRef<
                 disabled={isBusy}
                 accessibilityLabel="关闭当前预算"
               >
-                {isDeleting ? <Spinner tone="primaryForeground" /> : null}
-                <Text>{isDeleting ? "关闭中" : "关闭预算"}</Text>
+                {isDeleting || isDeletingLedger ? <Spinner tone="primaryForeground" /> : null}
+                <Text>{isDeleting || isDeletingLedger ? "关闭中" : "关闭预算"}</Text>
               </Button>
             ) : null}
             <Button
@@ -237,8 +276,10 @@ export const AccountingBudgetSheet = forwardRef<
               disabled={isBusy}
               accessibilityLabel={budget ? "保存预算修改" : "保存预算"}
             >
-              {isUpdating ? <Spinner tone="primaryForeground" /> : null}
-              <Text>{isUpdating ? "保存中" : budget ? "保存修改" : "保存"}</Text>
+              {isUpdating || isUpdatingLedger ? <Spinner tone="primaryForeground" /> : null}
+              <Text>
+                {isUpdating || isUpdatingLedger ? "保存中" : budget ? "保存修改" : "保存"}
+              </Text>
             </Button>
           </View>
         </View>

@@ -1,3 +1,4 @@
+import { useRouter } from "expo-router"
 import { useEffect, useMemo, useRef, useState } from "react"
 import { Pressable, SectionList, View } from "react-native"
 import useSWR, { useSWRConfig } from "swr"
@@ -6,10 +7,6 @@ import {
   AccountingBudgetSheet,
   type AccountingBudgetSheetMethods,
 } from "@/components/accounting/accounting-budget-sheet"
-import {
-  AccountingEntrySheet,
-  type AccountingEntrySheetMethods,
-} from "@/components/accounting/accounting-entry-sheet"
 import { Button } from "@/components/ui/button"
 import {
   Item,
@@ -20,7 +17,7 @@ import {
   ItemTitle,
 } from "@/components/ui/item"
 import { Progress } from "@/components/ui/progress"
-import { Spinner } from "@/components/ui/spinner"
+import { Skeleton } from "@/components/ui/skeleton"
 import { AppSymbol } from "@/components/ui/symbol"
 import { Text } from "@/components/ui/text"
 import { getAccountingCategoryLabel } from "@/lib/constants/accounting"
@@ -100,6 +97,29 @@ function MonthlySummary({ data }: { data: AccountingOverview | undefined }) {
   )
 }
 
+function MonthlySummarySkeleton() {
+  return (
+    <View className="flex-row gap-2" accessibilityLabel="正在读取本月收支概览">
+      {Array.from({ length: 3 }, (_, index) => (
+        <View key={index} className="bg-card min-w-0 flex-1 gap-2 rounded-2xl p-3">
+          <Skeleton className="h-3 w-10" />
+          <Skeleton className="h-5 w-16" />
+        </View>
+      ))}
+    </View>
+  )
+}
+
+function TransactionListSkeleton() {
+  return (
+    <View className="gap-3 px-4 py-3" accessibilityLabel="正在读取这个月的账单">
+      <Skeleton className="h-5 w-28" />
+      <Skeleton className="h-16 w-full rounded-2xl" />
+      <Skeleton className="h-16 w-full rounded-2xl" />
+    </View>
+  )
+}
+
 function BudgetSummary({
   budget,
   onPress,
@@ -171,8 +191,8 @@ function BudgetSummary({
 }
 
 export default function AccountingScreen() {
+  const router = useRouter()
   const [month, setMonth] = useState(getCurrentMonthKey)
-  const entrySheetRef = useRef<AccountingEntrySheetMethods>(null)
   const budgetSheetRef = useRef<AccountingBudgetSheetMethods>(null)
   const { mutate: mutateCache } = useSWRConfig()
   const overviewKey = `/api/accounting/overview?month=${month}`
@@ -221,11 +241,8 @@ export default function AccountingScreen() {
         >
           <AppSymbol name={{ ios: "chevron.left", android: "chevron_left" }} size={18} />
         </Button>
-        <View className="min-w-0 flex-1 items-center gap-0.5">
+        <View className="min-w-0 flex-1 items-center">
           <Text className="font-semibold">{formatMonthTitle(month)}</Text>
-          <Text className="text-muted-foreground text-xs">
-            {data?.transactions.length ?? 0} 笔记录
-          </Text>
         </View>
         <Button
           variant="ghost"
@@ -237,13 +254,17 @@ export default function AccountingScreen() {
         </Button>
       </View>
 
-      <MonthlySummary data={data} />
+      {isLoading ? <MonthlySummarySkeleton /> : data ? <MonthlySummary data={data} /> : null}
 
-      {isCurrentMonth ? (
-        <BudgetSummary
-          budget={data?.budget}
-          onPress={() => budgetSheetRef.current?.present(data?.budget ?? null)}
-        />
+      {isCurrentMonth && (isLoading || data) ? (
+        isLoading ? (
+          <Skeleton className="h-28 w-full rounded-2xl" />
+        ) : (
+          <BudgetSummary
+            budget={data?.budget}
+            onPress={() => budgetSheetRef.current?.present(data?.budget ?? null)}
+          />
+        )
       ) : null}
 
       {error && data ? (
@@ -262,7 +283,7 @@ export default function AccountingScreen() {
         </View>
         <Button
           size="sm"
-          onPress={() => entrySheetRef.current?.present()}
+          onPress={() => router.push("/accounting/entry")}
           accessibilityLabel="记一笔"
         >
           <AppSymbol name={{ ios: "plus", android: "add" }} size={15} tone="primaryForeground" />
@@ -283,14 +304,11 @@ export default function AccountingScreen() {
         onRefresh={() => void mutate()}
         ListHeaderComponent={listHeader}
         ListEmptyComponent={
-          <View className="min-h-72 items-center justify-center gap-4 px-8 py-12">
+          <View className="min-h-72">
             {isLoading ? (
-              <>
-                <Spinner size="large" />
-                <Text className="text-muted-foreground text-sm">正在整理这个月的账单...</Text>
-              </>
+              <TransactionListSkeleton />
             ) : error ? (
-              <>
+              <View className="min-h-72 items-center justify-center gap-4 px-8 py-12">
                 <View className="bg-destructive/10 size-12 items-center justify-center rounded-2xl">
                   <AppSymbol
                     name={{ ios: "wifi.exclamationmark", android: "wifi_off" }}
@@ -310,9 +328,9 @@ export default function AccountingScreen() {
                 >
                   <Text>重新尝试</Text>
                 </Button>
-              </>
+              </View>
             ) : (
-              <>
+              <View className="min-h-72 items-center justify-center gap-4 px-8 py-12">
                 <View className="bg-muted size-12 items-center justify-center rounded-2xl">
                   <AppSymbol name={{ ios: "yensign.circle", android: "payments" }} size={24} />
                 </View>
@@ -323,7 +341,7 @@ export default function AccountingScreen() {
                   </Text>
                 </View>
                 <Button
-                  onPress={() => entrySheetRef.current?.present()}
+                  onPress={() => router.push("/accounting/entry")}
                   accessibilityLabel="记下第一笔"
                 >
                   <AppSymbol
@@ -333,7 +351,7 @@ export default function AccountingScreen() {
                   />
                   <Text>记下第一笔</Text>
                 </Button>
-              </>
+              </View>
             )}
           </View>
         }
@@ -355,7 +373,12 @@ export default function AccountingScreen() {
           return (
             <Pressable
               className="border-border bg-card mx-4 mb-2 rounded-2xl border"
-              onPress={() => entrySheetRef.current?.present(item)}
+              onPress={() =>
+                router.push({
+                  pathname: "/accounting/entry",
+                  params: { transactionId: item.id, month },
+                })
+              }
               accessibilityRole="button"
               accessibilityLabel={`编辑${item.note || categoryLabel}账单`}
             >
@@ -391,7 +414,6 @@ export default function AccountingScreen() {
         ListFooterComponent={<View className="h-8" />}
       />
 
-      <AccountingEntrySheet ref={entrySheetRef} />
       <AccountingBudgetSheet ref={budgetSheetRef} />
     </View>
   )
