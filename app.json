@@ -13,7 +13,8 @@
       "bundleIdentifier": "me.jileme.app"
     },
     "android": {
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "me.jileme.app"
     },
     "web": {
       "output": "static",
@@ -41,6 +42,12 @@
         "projectId": "f9182a56-4b7e-4d78-9264-b9d0b712b931"
       }
     },
-    "owner": "calmcat"
+    "owner": "calmcat",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/f9182a56-4b7e-4d78-9264-b9d0b712b931"
+    }
   }
 }
