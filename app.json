@@ -2,27 +2,22 @@
   "expo": {
     "name": "记了么",
     "slug": "jileme",
+    "description": "记了么生活记录移动客户端",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/logo.png",
     "scheme": "jileme",
     "userInterfaceStyle": "automatic",
     "ios": {
-      "icon": "./assets/expo.icon",
+      "icon": "./assets/images/logo.png",
       "bundleIdentifier": "me.jileme.app"
     },
     "android": {
-      "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE",
-        "foregroundImage": "./assets/images/android-icon-foreground.png",
-        "backgroundImage": "./assets/images/android-icon-background.png",
-        "monochromeImage": "./assets/images/android-icon-monochrome.png"
-      },
       "predictiveBackGestureEnabled": false
     },
     "web": {
       "output": "static",
-      "favicon": "./assets/images/favicon.png"
+      "favicon": "./assets/images/favicon-96x96.png"
     },
     "plugins": [
       "expo-router",
@@ -31,7 +26,8 @@
         {
           "backgroundColor": "#208AEF",
           "image": "./assets/images/splash-icon.png",
-          "imageWidth": 76
+          "imageWidth": 76,
+          "resizeMode": "contain"
         }
       ]
     ],
