@@ -1,10 +1,10 @@
 import { Stack, useLocalSearchParams, useRouter } from "expo-router"
 import { useEffect, useMemo, useState } from "react"
-import { Alert, Pressable, SectionList, View } from "react-native"
+import { Alert, Pressable, SectionList, useColorScheme, View } from "react-native"
 import useSWR, { useSWRConfig } from "swr"
 import useSWRMutation from "swr/mutation"
 
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { AccountingCategoryIcon } from "@/components/accounting/accounting-category-icon"
 import { Button } from "@/components/ui/button"
 import {
   Item,
@@ -27,6 +27,7 @@ import {
   moveMonthKey,
 } from "@/lib/date"
 import { fetcher, RequestError } from "@/lib/request"
+import { THEME } from "@/lib/theme"
 import { cn } from "@/lib/utils"
 import type { AccountingPeriod } from "@/types/accounting"
 import type {
@@ -77,6 +78,7 @@ function LedgerDetailSkeleton() {
 }
 
 export default function AccountingLedgerDetailScreen() {
+  const colorScheme = useColorScheme() === "dark" ? "dark" : "light"
   const params = useLocalSearchParams<{ id?: string | string[] }>()
   const ledgerId = Array.isArray(params.id) ? params.id[0] : params.id
   const router = useRouter()
@@ -207,26 +209,6 @@ export default function AccountingLedgerDetailScreen() {
 
   const listHeader = data ? (
     <View className="gap-5 px-4 pb-5 pt-3">
-      <View className="flex-row items-center justify-between gap-3">
-        <Button
-          variant="ghost"
-          size="icon-sm"
-          onPress={() => setMonth((current) => moveMonthKey(current, -1))}
-          accessibilityLabel="查看上个月"
-        >
-          <AppSymbol name={{ ios: "chevron.left", android: "chevron_left" }} size={18} />
-        </Button>
-        <Text className="font-semibold">{formatMonthTitle(month)}</Text>
-        <Button
-          variant="ghost"
-          size="icon-sm"
-          onPress={() => setMonth((current) => moveMonthKey(current, 1))}
-          accessibilityLabel="查看下个月"
-        >
-          <AppSymbol name={{ ios: "chevron.right", android: "chevron_right" }} size={18} />
-        </Button>
-      </View>
-
       <View className="flex-row gap-2">
         {[
           { label: "结余", value: data.incomeCents - data.expenseCents, primary: false },
@@ -264,27 +246,9 @@ export default function AccountingLedgerDetailScreen() {
         </View>
       ) : null}
 
-      <View className="border-border bg-card flex-row items-center gap-3 rounded-2xl border p-4">
-        <View className="flex-1 flex-row">
-          {data.members.slice(0, 4).map((member, index) => (
-            <Avatar
-              key={member.userId}
-              className={cn(index > 0 && "-ml-2")}
-              alt={member.displayName}
-            >
-              <AvatarFallback>
-                <Text className="text-xs font-medium">{member.displayName.slice(0, 1)}</Text>
-              </AvatarFallback>
-            </Avatar>
-          ))}
-        </View>
-        <Text className="text-muted-foreground text-sm">{data.memberCount} 位成员</Text>
-      </View>
-
       <View className="flex-row items-center justify-between gap-3 pt-1">
         <View className="min-w-0 flex-1 gap-0.5">
           <Text className="text-lg font-semibold">账本明细</Text>
-          <Text className="text-muted-foreground text-xs">移出账本不会删除原始账单。</Text>
         </View>
         <View className="flex-row gap-2">
           {data.role === "editor" ? (
@@ -311,24 +275,42 @@ export default function AccountingLedgerDetailScreen() {
       <Stack.Screen
         options={{
           title: data?.name ?? "账本详情",
-          headerRight:
-            data?.role === "owner"
-              ? () => (
-                  <Button
-                    variant="ghost"
-                    size="icon-sm"
-                    onPress={() =>
-                      router.push({
-                        pathname: "/accounting/ledgers/[id]/settings",
-                        params: { id: data.id },
-                      })
-                    }
-                    accessibilityLabel="打开账本设置"
-                  >
-                    <AppSymbol name={{ ios: "ellipsis.circle", android: "more_vert" }} size={19} />
-                  </Button>
-                )
-              : undefined,
+          headerRight: () => (
+            <View className="flex-row items-center gap-1">
+              <Button
+                variant="ghost"
+                size="icon-xs"
+                onPress={() => setMonth((current) => moveMonthKey(current, -1))}
+                accessibilityLabel="查看上个月"
+              >
+                <AppSymbol name={{ ios: "chevron.left", android: "chevron_left" }} size={15} />
+              </Button>
+              <Text className="text-xs font-semibold tabular-nums">{formatMonthTitle(month)}</Text>
+              <Button
+                variant="ghost"
+                size="icon-xs"
+                onPress={() => setMonth((current) => moveMonthKey(current, 1))}
+                accessibilityLabel="查看下个月"
+              >
+                <AppSymbol name={{ ios: "chevron.right", android: "chevron_right" }} size={15} />
+              </Button>
+              {data?.role === "owner" ? (
+                <Button
+                  variant="ghost"
+                  size="icon-sm"
+                  onPress={() =>
+                    router.push({
+                      pathname: "/accounting/ledgers/[id]/settings",
+                      params: { id: data.id },
+                    })
+                  }
+                  accessibilityLabel="打开账本设置"
+                >
+                  <AppSymbol name={{ ios: "ellipsis.circle", android: "more_vert" }} size={19} />
+                </Button>
+              ) : null}
+            </View>
+          ),
         }}
       />
       <SectionList<AccountingLedgerTransaction, TransactionSection>
@@ -402,13 +384,11 @@ export default function AccountingLedgerDetailScreen() {
             >
               <Item>
                 <ItemMedia>
-                  <AppSymbol
-                    name={{
-                      ios: income ? "arrow.down.left" : "arrow.up.right",
-                      android: income ? "south_west" : "north_east",
-                    }}
-                    size={18}
-                    tone={income ? "primary" : "foreground"}
+                  <AccountingCategoryIcon
+                    category={item.category}
+                    type={item.type}
+                    size={19}
+                    color={income ? THEME[colorScheme].primary : THEME[colorScheme].foreground}
                   />
                 </ItemMedia>
                 <ItemContent>

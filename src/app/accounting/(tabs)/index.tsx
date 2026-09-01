@@ -1,8 +1,9 @@
-import { useRouter } from "expo-router"
+import { Stack, useRouter } from "expo-router"
 import { useEffect, useMemo, useRef, useState } from "react"
-import { Pressable, SectionList, View } from "react-native"
+import { Pressable, SectionList, useColorScheme, View } from "react-native"
 import useSWR, { useSWRConfig } from "swr"
 
+import { AccountingCategoryIcon } from "@/components/accounting/accounting-category-icon"
 import {
   AccountingBudgetSheet,
   type AccountingBudgetSheetMethods,
@@ -28,6 +29,7 @@ import {
   moveMonthKey,
 } from "@/lib/date"
 import { fetcher, RequestError } from "@/lib/request"
+import { THEME } from "@/lib/theme"
 import { cn } from "@/lib/utils"
 import type {
   AccountingBudgetStatus,
@@ -191,6 +193,7 @@ function BudgetSummary({
 }
 
 export default function AccountingScreen() {
+  const colorScheme = useColorScheme() === "dark" ? "dark" : "light"
   const router = useRouter()
   const [month, setMonth] = useState(getCurrentMonthKey)
   const budgetSheetRef = useRef<AccountingBudgetSheetMethods>(null)
@@ -232,28 +235,6 @@ export default function AccountingScreen() {
 
   const listHeader = (
     <View className="gap-5 px-4 pb-5 pt-3">
-      <View className="flex-row items-center justify-between gap-3">
-        <Button
-          variant="ghost"
-          size="icon-sm"
-          onPress={() => setMonth((current) => moveMonthKey(current, -1))}
-          accessibilityLabel="查看上个月"
-        >
-          <AppSymbol name={{ ios: "chevron.left", android: "chevron_left" }} size={18} />
-        </Button>
-        <View className="min-w-0 flex-1 items-center">
-          <Text className="font-semibold">{formatMonthTitle(month)}</Text>
-        </View>
-        <Button
-          variant="ghost"
-          size="icon-sm"
-          onPress={() => setMonth((current) => moveMonthKey(current, 1))}
-          accessibilityLabel="查看下个月"
-        >
-          <AppSymbol name={{ ios: "chevron.right", android: "chevron_right" }} size={18} />
-        </Button>
-      </View>
-
       {isLoading ? <MonthlySummarySkeleton /> : data ? <MonthlySummary data={data} /> : null}
 
       {isCurrentMonth && (isLoading || data) ? (
@@ -275,26 +256,37 @@ export default function AccountingScreen() {
           </Button>
         </View>
       ) : null}
-
-      <View className="flex-row items-center justify-between gap-3 pt-1">
-        <View className="gap-0.5">
-          <Text className="text-lg font-semibold">收支明细</Text>
-          <Text className="text-muted-foreground text-xs">记录越及时，月底越清楚。</Text>
-        </View>
-        <Button
-          size="sm"
-          onPress={() => router.push("/accounting/entry")}
-          accessibilityLabel="记一笔"
-        >
-          <AppSymbol name={{ ios: "plus", android: "add" }} size={15} tone="primaryForeground" />
-          <Text>记一笔</Text>
-        </Button>
-      </View>
     </View>
   )
 
   return (
     <View className="bg-background flex-1">
+      <Stack.Screen
+        options={{
+          title: "明细",
+          headerRight: () => (
+            <View className="flex-row items-center gap-1">
+              <Button
+                variant="ghost"
+                size="icon-xs"
+                onPress={() => setMonth((current) => moveMonthKey(current, -1))}
+                accessibilityLabel="查看上个月"
+              >
+                <AppSymbol name={{ ios: "chevron.left", android: "chevron_left" }} size={15} />
+              </Button>
+              <Text className="text-xs font-semibold tabular-nums">{formatMonthTitle(month)}</Text>
+              <Button
+                variant="ghost"
+                size="icon-xs"
+                onPress={() => setMonth((current) => moveMonthKey(current, 1))}
+                accessibilityLabel="查看下个月"
+              >
+                <AppSymbol name={{ ios: "chevron.right", android: "chevron_right" }} size={15} />
+              </Button>
+            </View>
+          ),
+        }}
+      />
       <SectionList<AccountingTransaction, TransactionSection>
         sections={sections}
         keyExtractor={(transaction) => transaction.id}
@@ -384,13 +376,11 @@ export default function AccountingScreen() {
             >
               <Item>
                 <ItemMedia>
-                  <AppSymbol
-                    name={{
-                      ios: income ? "arrow.down.left" : "arrow.up.right",
-                      android: income ? "south_west" : "north_east",
-                    }}
-                    size={18}
-                    tone={income ? "primary" : "foreground"}
+                  <AccountingCategoryIcon
+                    category={item.category}
+                    type={item.type}
+                    size={19}
+                    color={income ? THEME[colorScheme].primary : THEME[colorScheme].foreground}
                   />
                 </ItemMedia>
                 <ItemContent>

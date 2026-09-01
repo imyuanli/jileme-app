@@ -1,5 +1,5 @@
 import { BottomSheetModal, BottomSheetView } from "@expo/ui/community/bottom-sheet"
-import { useRouter } from "expo-router"
+import { Stack, useRouter } from "expo-router"
 import { useEffect, useRef, useState } from "react"
 import { FlatList, Pressable, useColorScheme, View } from "react-native"
 import useSWR, { useSWRConfig } from "swr"
@@ -101,6 +101,17 @@ export default function AccountingLedgersScreen() {
 
   return (
     <View className="bg-background flex-1">
+      <Stack.Screen
+        options={{
+          title: "账本",
+          headerRight: () => (
+            <Button size="sm" onPress={presentCreateSheet} accessibilityLabel="新建账本">
+              <AppSymbol name={{ ios: "plus", android: "add" }} tone="primaryForeground" />
+              <Text>新建</Text>
+            </Button>
+          ),
+        }}
+      />
       <FlatList
         data={data ?? []}
         keyExtractor={(ledger) => ledger.id}
@@ -108,20 +119,6 @@ export default function AccountingLedgersScreen() {
         contentContainerClassName="pb-8"
         refreshing={Boolean(data) && isValidating}
         onRefresh={() => void mutate()}
-        ListHeaderComponent={
-          <View className="flex-row items-start justify-between gap-4 px-4 pb-3 pt-4">
-            <View className="min-w-0 flex-1 gap-1">
-              <Text className="text-xl font-semibold">我的账本</Text>
-              <Text className="text-muted-foreground text-sm">
-                一个人记，或者和重要的人一起记。
-              </Text>
-            </View>
-            <Button size="sm" onPress={presentCreateSheet} accessibilityLabel="新建账本">
-              <AppSymbol name={{ ios: "plus", android: "add" }} tone="primaryForeground" />
-              <Text>新建</Text>
-            </Button>
-          </View>
-        }
         ListEmptyComponent={
           isLoading ? (
             <LedgerListSkeleton />

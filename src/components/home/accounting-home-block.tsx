@@ -1,5 +1,6 @@
-import { View } from "react-native"
+import { useColorScheme, View } from "react-native"
 
+import { AccountingCategoryIcon } from "@/components/accounting/accounting-category-icon"
 import {
   Item,
   ItemActions,
@@ -12,6 +13,7 @@ import {
 import { AppSymbol } from "@/components/ui/symbol"
 import { Text } from "@/components/ui/text"
 import { getAccountingCategoryLabel } from "@/lib/constants/accounting"
+import { THEME } from "@/lib/theme"
 import type { AccountingHomeBlock as AccountingHomeBlockData } from "@/types/home"
 
 const money = new Intl.NumberFormat("zh-CN", {
@@ -21,6 +23,7 @@ const money = new Intl.NumberFormat("zh-CN", {
 })
 
 export function AccountingHomeBlock({ block }: { block: AccountingHomeBlockData }) {
+  const colorScheme = useColorScheme() === "dark" ? "dark" : "light"
   return (
     <View className="gap-4 py-5" accessibilityLabel="记账摘要">
       <View className="flex-row items-start justify-between gap-3">
@@ -61,13 +64,11 @@ export function AccountingHomeBlock({ block }: { block: AccountingHomeBlockData 
           return (
             <Item key={transaction.id}>
               <ItemMedia>
-                <AppSymbol
-                  name={{
-                    ios: income ? "arrow.down.left" : "arrow.up.right",
-                    android: income ? "south_west" : "north_east",
-                  }}
+                <AccountingCategoryIcon
+                  category={transaction.category}
+                  type={transaction.type}
                   size={18}
-                  tone={income ? "primary" : "foreground"}
+                  color={income ? THEME[colorScheme].primary : THEME[colorScheme].foreground}
                 />
               </ItemMedia>
               <ItemContent>
