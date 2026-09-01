@@ -9,6 +9,7 @@ import {
   type AccountingBudgetSheetMethods,
 } from "@/components/accounting/accounting-budget-sheet"
 import { Button } from "@/components/ui/button"
+import { Empty, EmptyDescription, EmptyMedia, EmptyTitle } from "@/components/ui/empty"
 import {
   Item,
   ItemActions,
@@ -114,7 +115,7 @@ function MonthlySummarySkeleton() {
 
 function TransactionListSkeleton() {
   return (
-    <View className="gap-3 px-4 py-3" accessibilityLabel="正在读取这个月的账单">
+    <View className="gap-3 py-3" accessibilityLabel="正在读取这个月的账单">
       <Skeleton className="h-5 w-28" />
       <Skeleton className="h-16 w-full rounded-2xl" />
       <Skeleton className="h-16 w-full rounded-2xl" />
@@ -234,7 +235,7 @@ export default function AccountingScreen() {
   }, [data?.transactions])
 
   const listHeader = (
-    <View className="gap-5 px-4 pb-5 pt-3">
+    <View className="gap-5 pb-5 pt-3">
       {isLoading ? <MonthlySummarySkeleton /> : data ? <MonthlySummary data={data} /> : null}
 
       {isCurrentMonth && (isLoading || data) ? (
@@ -291,64 +292,55 @@ export default function AccountingScreen() {
         sections={sections}
         keyExtractor={(transaction) => transaction.id}
         contentInsetAdjustmentBehavior="automatic"
+        contentContainerClassName="gap-2 px-4 pb-8"
         stickySectionHeadersEnabled
         refreshing={Boolean(data) && isValidating}
         onRefresh={() => void mutate()}
         ListHeaderComponent={listHeader}
         ListEmptyComponent={
-          <View className="min-h-72">
-            {isLoading ? (
-              <TransactionListSkeleton />
-            ) : error ? (
-              <View className="min-h-72 items-center justify-center gap-4 px-8 py-12">
-                <View className="bg-destructive/10 size-12 items-center justify-center rounded-2xl">
-                  <AppSymbol
-                    name={{ ios: "wifi.exclamationmark", android: "wifi_off" }}
-                    tone="destructive"
-                  />
-                </View>
-                <View className="items-center gap-1.5">
-                  <Text className="text-center font-semibold">账单暂时没有打开</Text>
-                  <Text className="text-muted-foreground text-center text-sm leading-6">
-                    {getErrorMessage(error)}
-                  </Text>
-                </View>
-                <Button
-                  variant="outline"
-                  onPress={() => void mutate()}
-                  accessibilityLabel="重新读取账单"
-                >
-                  <Text>重新尝试</Text>
-                </Button>
-              </View>
-            ) : (
-              <View className="min-h-72 items-center justify-center gap-4 px-8 py-12">
-                <View className="bg-muted size-12 items-center justify-center rounded-2xl">
-                  <AppSymbol name={{ ios: "yensign.circle", android: "payments" }} size={24} />
-                </View>
-                <View className="items-center gap-1.5">
-                  <Text className="text-center font-semibold">本月还没有账单</Text>
-                  <Text className="text-muted-foreground text-center text-sm">
-                    记下第一笔，月底回看会更清楚。
-                  </Text>
-                </View>
-                <Button
-                  onPress={() => router.push("/accounting/entry")}
-                  accessibilityLabel="记下第一笔"
-                >
-                  <AppSymbol
-                    name={{ ios: "plus", android: "add" }}
-                    size={16}
-                    tone="primaryForeground"
-                  />
-                  <Text>记下第一笔</Text>
-                </Button>
-              </View>
-            )}
-          </View>
+          isLoading ? (
+            <TransactionListSkeleton />
+          ) : error ? (
+            <Empty className="min-h-72">
+              <EmptyMedia className="bg-destructive/10">
+                <AppSymbol
+                  name={{ ios: "wifi.exclamationmark", android: "wifi_off" }}
+                  tone="destructive"
+                />
+              </EmptyMedia>
+              <EmptyTitle>账单暂时没有打开</EmptyTitle>
+              <EmptyDescription>{getErrorMessage(error)}</EmptyDescription>
+              <Button
+                variant="outline"
+                onPress={() => void mutate()}
+                accessibilityLabel="重新读取账单"
+              >
+                <Text>重新尝试</Text>
+              </Button>
+            </Empty>
+          ) : (
+            <Empty className="min-h-72">
+              <EmptyMedia>
+                <AppSymbol name={{ ios: "yensign.circle", android: "payments" }} size={24} />
+              </EmptyMedia>
+              <EmptyTitle>本月还没有账单</EmptyTitle>
+              <EmptyDescription>记下第一笔，月底回看会更清楚。</EmptyDescription>
+              <Button
+                onPress={() => router.push("/accounting/entry")}
+                accessibilityLabel="记下第一笔"
+              >
+                <AppSymbol
+                  name={{ ios: "plus", android: "add" }}
+                  size={16}
+                  tone="primaryForeground"
+                />
+                <Text>记下第一笔</Text>
+              </Button>
+            </Empty>
+          )
         }
         renderSectionHeader={({ section }) => (
-          <View className="bg-background flex-row items-baseline justify-between gap-3 px-4 py-3">
+          <View className="bg-background flex-row items-baseline justify-between gap-3 py-3">
             <Text className="font-medium">{formatAccountingDateTitle(section.title)}</Text>
             <Text className="text-muted-foreground text-xs tabular-nums">
               支出 {compactMoney.format(section.dailyExpenseCents / 100)}
@@ -364,7 +356,7 @@ export default function AccountingScreen() {
 
           return (
             <Pressable
-              className="border-border bg-card mx-4 mb-2 rounded-2xl border"
+              className="border-border bg-card rounded-2xl border"
               onPress={() =>
                 router.push({
                   pathname: "/accounting/entry",
@@ -401,7 +393,6 @@ export default function AccountingScreen() {
             </Pressable>
           )
         }}
-        ListFooterComponent={<View className="h-8" />}
       />
 
       <AccountingBudgetSheet ref={budgetSheetRef} />

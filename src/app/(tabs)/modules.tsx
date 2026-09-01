@@ -30,16 +30,16 @@ export default function ModulesScreen() {
     <ScrollView
       className="bg-background flex-1"
       contentInsetAdjustmentBehavior="automatic"
-      contentContainerClassName="gap-5 px-4 pb-8 pt-4"
+      contentContainerClassName="gap-6 px-4 pb-8 pt-4"
     >
-      <View className="gap-1 px-1">
+      <View className="gap-1">
         <Text className="text-2xl font-semibold">记录模块</Text>
         <Text className="text-muted-foreground text-sm leading-6">
           选择一个模块，进入它的记录空间。
         </Text>
       </View>
 
-      <View className="gap-2">
+      <View className="gap-4">
         {RECORD_MODULES.map((module) => (
           <Pressable
             key={module.id}
@@ -48,7 +48,7 @@ export default function ModulesScreen() {
             accessibilityRole="button"
             accessibilityLabel={`打开${module.name}模块`}
           >
-            <Item className="border-border bg-card min-h-20 border px-3 py-3">
+            <Item>
               <ItemMedia>
                 <AppSymbol name={module.icon} size={20} tone="primary" />
               </ItemMedia>

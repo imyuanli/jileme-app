@@ -23,7 +23,7 @@ function HomeBlockContent({ block }: { block: HomeBlock }) {
       return <AccountingHomeBlock block={block} />
     case "module-error":
       return (
-        <View className="bg-muted/60 my-4 flex-row items-start gap-3 rounded-2xl p-4">
+        <View className="bg-muted/60 flex-row items-start gap-3 rounded-2xl p-4">
           <AppSymbol
             name={{ ios: "exclamationmark.circle", android: "error" }}
             tone="destructive"
@@ -41,7 +41,7 @@ function HomeSection({ title, blocks }: { title: string; blocks: HomeBlock[] }) 
   if (blocks.length === 0) return null
 
   return (
-    <View accessibilityLabel={title}>
+    <View className="gap-4" accessibilityLabel={title}>
       <View className="border-border border-b pb-2">
         <Text className="text-muted-foreground text-sm font-medium">{title}</Text>
       </View>
@@ -79,9 +79,10 @@ export default function HomeScreen() {
     <ScrollView
       className="bg-background flex-1"
       contentInsetAdjustmentBehavior="automatic"
+      contentContainerClassName="gap-6 px-4 pb-8 pt-4"
       contentContainerStyle={{ flexGrow: 1 }}
     >
-      <View className="border-border border-b p-4">
+      <View className="border-border border-b pb-4">
         <CalendarControls
           onDateChange={setSelectedDateKey}
           selectedDateKey={selectedDateKey}
@@ -89,7 +90,7 @@ export default function HomeScreen() {
         />
       </View>
 
-      <View className="p-4">
+      <View>
         {error ? (
           <Empty className="min-h-72">
             <EmptyMedia>
@@ -110,7 +111,7 @@ export default function HomeScreen() {
             </Button>
           </Empty>
         ) : isContentLoading ? (
-          <View className="gap-5">
+          <View className="gap-4">
             <Skeleton className="h-24 w-full rounded-3xl" />
             <Skeleton className="h-48 w-full rounded-3xl" />
           </View>
@@ -125,7 +126,7 @@ export default function HomeScreen() {
             </View>
           </Empty>
         ) : (
-          <View className="gap-8">
+          <View className="gap-6">
             <HomeSection title={isToday ? "今日焦点" : "当天焦点"} blocks={focusBlocks} />
             <HomeSection title={isToday ? "今日记录" : "当天记录"} blocks={recordBlocks} />
           </View>

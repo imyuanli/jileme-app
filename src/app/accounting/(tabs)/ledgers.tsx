@@ -7,6 +7,7 @@ import useSWRMutation from "swr/mutation"
 
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { Empty, EmptyDescription, EmptyMedia, EmptyTitle } from "@/components/ui/empty"
 import { Field, FieldDescription, FieldError, FieldLabel } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -35,7 +36,7 @@ function getErrorMessage(error: unknown, fallback: string) {
 
 function LedgerListSkeleton() {
   return (
-    <View className="gap-4 px-4 py-4" accessibilityLabel="正在读取账本">
+    <View className="gap-4 py-4" accessibilityLabel="正在读取账本">
       <Skeleton className="h-40 w-full rounded-2xl" />
       <Skeleton className="h-40 w-full rounded-2xl" />
     </View>
@@ -116,42 +117,39 @@ export default function AccountingLedgersScreen() {
         data={data ?? []}
         keyExtractor={(ledger) => ledger.id}
         contentInsetAdjustmentBehavior="automatic"
-        contentContainerClassName="pb-8"
+        contentContainerClassName="gap-3 px-4 pb-8"
         refreshing={Boolean(data) && isValidating}
         onRefresh={() => void mutate()}
         ListEmptyComponent={
           isLoading ? (
             <LedgerListSkeleton />
           ) : error ? (
-            <View className="min-h-80 items-center justify-center gap-4 px-8 py-12">
-              <View className="bg-destructive/10 size-12 items-center justify-center rounded-2xl">
+            <Empty className="min-h-80">
+              <EmptyMedia className="bg-destructive/10">
                 <AppSymbol
                   name={{ ios: "wifi.exclamationmark", android: "wifi_off" }}
                   tone="destructive"
                 />
-              </View>
-              <Text className="text-destructive text-center text-sm">
+              </EmptyMedia>
+              <EmptyTitle>账本读取失败</EmptyTitle>
+              <EmptyDescription className="text-destructive">
                 {getErrorMessage(error, "账本读取失败")}
-              </Text>
+              </EmptyDescription>
               <Button variant="outline" onPress={() => void mutate()}>
                 <Text>重新尝试</Text>
               </Button>
-            </View>
+            </Empty>
           ) : (
-            <View className="min-h-80 items-center justify-center gap-4 px-8 py-12">
-              <View className="bg-muted size-12 items-center justify-center rounded-2xl">
+            <Empty className="min-h-80">
+              <EmptyMedia>
                 <AppSymbol name={{ ios: "books.vertical", android: "library_books" }} size={24} />
-              </View>
-              <View className="items-center gap-1.5">
-                <Text className="font-semibold">还没有账本</Text>
-                <Text className="text-muted-foreground text-center text-sm leading-6">
-                  创建一个账本，把相关的收支放在一起。
-                </Text>
-              </View>
+              </EmptyMedia>
+              <EmptyTitle>还没有账本</EmptyTitle>
+              <EmptyDescription>创建一个账本，把相关的收支放在一起。</EmptyDescription>
               <Button onPress={presentCreateSheet}>
                 <Text>创建第一个账本</Text>
               </Button>
-            </View>
+            </Empty>
           )
         }
         renderItem={({ item: ledger }) => {
@@ -159,7 +157,7 @@ export default function AccountingLedgersScreen() {
 
           return (
             <Pressable
-              className="border-border bg-card mx-4 mb-3 gap-4 rounded-2xl border p-4"
+              className="border-border bg-card gap-4 rounded-2xl border p-4"
               onPress={() =>
                 router.push({ pathname: "/accounting/ledgers/[id]", params: { id: ledger.id } })
               }
@@ -223,7 +221,7 @@ export default function AccountingLedgersScreen() {
         onDismiss={() => setCreateMessage("")}
       >
         <BottomSheetView>
-          <View className="gap-6 px-5 pb-10 pt-2">
+          <View className="gap-6 px-4 pb-10 pt-2">
             <View className="flex-row items-start justify-between gap-4">
               <View className="min-w-0 flex-1 gap-1">
                 <Text className="text-xl font-semibold">新建账本</Text>

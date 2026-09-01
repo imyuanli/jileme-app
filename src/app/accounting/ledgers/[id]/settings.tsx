@@ -261,7 +261,7 @@ export default function AccountingLedgerSettingsScreen() {
 
   if (error || !data || !ledgerId) {
     return (
-      <View className="bg-background flex-1 items-center justify-center gap-4 px-8">
+      <View className="bg-background flex-1 items-center justify-center gap-4 px-4">
         <Stack.Screen options={{ title: "账本设置" }} />
         <Text className="text-destructive text-center text-sm leading-6">
           {getErrorMessage(error, "账本设置暂时没有打开")}
@@ -284,12 +284,12 @@ export default function AccountingLedgerSettingsScreen() {
         keyboardShouldPersistTaps="handled"
         contentContainerClassName="gap-6 px-4 pb-8 pt-4"
       >
-        <View className="bg-card items-center gap-3 rounded-3xl px-5 py-6">
-          <View className="flex-row items-center justify-center">
-            {data.members.slice(0, 5).map((member, index) => (
+        <View className="bg-card items-center gap-3 rounded-3xl px-4 py-6">
+          <View className="flex-row items-center justify-center gap-2">
+            {data.members.slice(0, 5).map((member) => (
               <Avatar
                 key={member.userId}
-                className={cn("size-12 border-2 border-background", index > 0 && "-ml-3")}
+                className="size-12 border-2 border-background"
                 alt={member.displayName}
               >
                 <AvatarFallback>

@@ -206,7 +206,7 @@ function LoginForm() {
   const hasEmail = email.trim().length > 0
 
   return (
-    <Card className="w-full shadow-none">
+    <Card className="w-full">
       <CardHeader>
         <CardTitle className="text-xl">
           {method === "otp" ? "邮箱验证码登录" : "密码登录"}
@@ -391,11 +391,12 @@ export default function LoginScreen() {
         behavior={Platform.OS === "ios" ? "padding" : undefined}
       >
         <ScrollView
+          contentContainerClassName="flex-grow px-4 py-10"
           contentContainerStyle={{ flexGrow: 1 }}
           keyboardShouldPersistTaps="handled"
           automaticallyAdjustKeyboardInsets
         >
-          <View className="flex-1 items-center justify-center px-4 py-10">
+          <View className="flex-1 items-center justify-center">
             <View className="w-full max-w-sm items-center gap-6">
               <View className="flex-row items-center gap-2" accessibilityRole="header">
                 <Image

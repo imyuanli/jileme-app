@@ -35,7 +35,7 @@ function SessionGate({ children }: SessionGateProps) {
 
   if (isLoading) {
     return (
-      <View className="bg-background flex-1 items-center justify-center gap-4 px-8">
+      <View className="bg-background flex-1 items-center justify-center gap-4 px-4">
         <Spinner size="large" />
         <Text className="text-muted-foreground text-sm">正在打开你的记录...</Text>
       </View>
@@ -46,7 +46,7 @@ function SessionGate({ children }: SessionGateProps) {
     const message = error instanceof Error ? error.message : "暂时无法确认登录状态。"
 
     return (
-      <View className="bg-background flex-1 items-center justify-center gap-5 px-8">
+      <View className="bg-background flex-1 items-center justify-center gap-5 px-4">
         <View className="max-w-sm items-center gap-2">
           <Text className="text-center text-xl font-semibold">连接没有成功</Text>
           <Text className="text-muted-foreground text-center text-sm leading-6">{message}</Text>

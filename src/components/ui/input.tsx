@@ -10,9 +10,15 @@ const inputVariants = cva("", {
       default: "h-10 px-3 py-1 text-base",
       lg: "h-11 px-3.5 py-2 text-base",
     },
+    variant: {
+      default:
+        "dark:bg-input/30 border-input bg-background rounded-md border shadow-sm shadow-black/5",
+      plain: "h-auto border-0 bg-transparent px-0 py-0 shadow-none",
+    },
   },
   defaultVariants: {
     size: "default",
+    variant: "default",
   },
 })
 
@@ -27,14 +33,14 @@ const inputHitSlop = {
   lg: 0,
 } as const
 
-function Input({ className, size, hitSlop, ...props }: InputProps) {
+function Input({ className, size, variant, hitSlop, ...props }: InputProps) {
   const resolvedSize = size ?? "default"
 
   return (
     <TextInput
       className={cn(
-        "dark:bg-input/30 border-input bg-background text-foreground flex w-full min-w-0 flex-row items-center rounded-md border leading-5 shadow-sm shadow-black/5",
-        inputVariants({ size: resolvedSize }),
+        "text-foreground flex w-full min-w-0 flex-row items-center leading-5",
+        inputVariants({ size: resolvedSize, variant }),
         props.editable === false &&
           cn(
             "opacity-50",

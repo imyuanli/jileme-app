@@ -6,6 +6,7 @@ import useSWRMutation from "swr/mutation"
 
 import { AccountingCategoryIcon } from "@/components/accounting/accounting-category-icon"
 import { Button } from "@/components/ui/button"
+import { Empty, EmptyDescription, EmptyMedia, EmptyTitle } from "@/components/ui/empty"
 import {
   Item,
   ItemActions,
@@ -208,7 +209,7 @@ export default function AccountingLedgerDetailScreen() {
   }
 
   const listHeader = data ? (
-    <View className="gap-5 px-4 pb-5 pt-3">
+    <View className="gap-5 pb-5 pt-3">
       <View className="flex-row gap-2">
         {[
           { label: "结余", value: data.incomeCents - data.expenseCents, primary: false },
@@ -317,6 +318,7 @@ export default function AccountingLedgerDetailScreen() {
         sections={sections}
         keyExtractor={(transaction) => transaction.id}
         contentInsetAdjustmentBehavior="automatic"
+        contentContainerClassName="gap-2 px-4 pb-8"
         stickySectionHeadersEnabled
         refreshing={Boolean(data) && isValidating}
         onRefresh={() => void mutate()}
@@ -325,20 +327,21 @@ export default function AccountingLedgerDetailScreen() {
           isLoading ? (
             <LedgerDetailSkeleton />
           ) : error || !data ? (
-            <View className="min-h-80 items-center justify-center gap-4 px-8 py-12">
-              <Text className="text-destructive text-center text-sm leading-6">
+            <Empty className="min-h-80">
+              <EmptyTitle>账本暂时没有打开</EmptyTitle>
+              <EmptyDescription className="text-destructive">
                 {getErrorMessage(error, "账本暂时没有打开")}
-              </Text>
+              </EmptyDescription>
               <Button variant="outline" onPress={() => void mutate()}>
                 <Text>重新尝试</Text>
               </Button>
-            </View>
+            </Empty>
           ) : (
-            <View className="min-h-64 items-center justify-center gap-4 px-8 py-12">
-              <View className="bg-muted size-12 items-center justify-center rounded-2xl">
+            <Empty className="min-h-64">
+              <EmptyMedia>
                 <AppSymbol name={{ ios: "yensign.circle", android: "payments" }} size={24} />
-              </View>
-              <Text className="font-semibold">这个月还没有账单</Text>
+              </EmptyMedia>
+              <EmptyTitle>这个月还没有账单</EmptyTitle>
               <Button
                 onPress={() =>
                   router.push({ pathname: "/accounting/entry", params: { ledgerId: data.id } })
@@ -346,11 +349,11 @@ export default function AccountingLedgerDetailScreen() {
               >
                 <Text>记下第一笔</Text>
               </Button>
-            </View>
+            </Empty>
           )
         }
         renderSectionHeader={({ section }) => (
-          <View className="bg-background flex-row items-baseline justify-between gap-3 px-4 py-3">
+          <View className="bg-background flex-row items-baseline justify-between gap-3 py-3">
             <Text className="font-medium">{formatAccountingDateTitle(section.title)}</Text>
             <Text className="text-muted-foreground text-xs tabular-nums">
               支出 {money.format(section.dailyExpenseCents / 100)}
@@ -364,7 +367,7 @@ export default function AccountingLedgerDetailScreen() {
           return (
             <Pressable
               className={cn(
-                "border-border bg-card mx-4 mb-2 rounded-2xl border",
+                "border-border bg-card rounded-2xl border",
                 item.createdByCurrentUser && "active:opacity-80"
               )}
               onPress={
@@ -427,7 +430,6 @@ export default function AccountingLedgerDetailScreen() {
             </Pressable>
           )
         }}
-        ListFooterComponent={<View className="h-8" />}
       />
     </View>
   )

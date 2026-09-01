@@ -120,7 +120,7 @@ function LedgerNameForm({ data, ledgerId }: LedgerNameFormProps) {
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
       keyboardShouldPersistTaps="handled"
-      contentContainerClassName="gap-6 px-5 pb-8 pt-8"
+      contentContainerClassName="gap-6 px-4 pb-8 pt-8"
     >
       <View className="gap-2">
         <Text className="text-2xl font-semibold">修改账本名称</Text>
@@ -177,7 +177,7 @@ export default function AccountingLedgerNameScreen() {
     return (
       <View className="bg-background flex-1">
         <Stack.Screen options={{ title: "修改账本名称" }} />
-        <View className="gap-5 px-5 py-6">
+        <View className="gap-4 px-4 py-6">
           <Skeleton className="h-8 w-40" />
           <Skeleton className="h-16 w-full rounded-2xl" />
           <Skeleton className="h-11 w-full rounded-2xl" />
@@ -188,7 +188,7 @@ export default function AccountingLedgerNameScreen() {
 
   if (error || !data || !ledgerId) {
     return (
-      <View className="bg-background flex-1 items-center justify-center gap-4 px-8">
+      <View className="bg-background flex-1 items-center justify-center gap-4 px-4">
         <Stack.Screen options={{ title: "修改账本名称" }} />
         <Text className="text-destructive text-center text-sm leading-6">
           {getErrorMessage(error, "账本名称暂时无法打开")}

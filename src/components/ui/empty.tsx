@@ -4,9 +4,7 @@ import { Text } from "@/components/ui/text"
 import { cn } from "@/lib/utils"
 
 function Empty({ className, ...props }: React.ComponentProps<typeof View>) {
-  return (
-    <View className={cn("items-center justify-center gap-5 px-8 py-14", className)} {...props} />
-  )
+  return <View className={cn("items-center justify-center gap-5 py-14", className)} {...props} />
 }
 
 function EmptyMedia({ className, ...props }: React.ComponentProps<typeof View>) {

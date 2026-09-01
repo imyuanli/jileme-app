@@ -42,7 +42,7 @@ export function CalendarControls({
   }
 
   return (
-    <View className="gap-3" accessibilityLabel="日期选择">
+    <View className="gap-4" accessibilityLabel="日期选择">
       <View className="flex-row items-center justify-between gap-2">
         <View className="min-w-0 flex-1">
           <Text className="text-2xl font-semibold">{dateTitle}</Text>

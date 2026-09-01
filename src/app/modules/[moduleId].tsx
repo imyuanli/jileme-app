@@ -22,7 +22,7 @@ export default function ModuleHomeScreen() {
 
   if (!module) {
     return (
-      <View className="bg-background flex-1 items-center justify-center px-8">
+      <View className="bg-background flex-1 items-center justify-center px-4">
         <Stack.Screen options={{ title: "模块" }} />
         <Empty>
           <EmptyTitle>模块不存在</EmptyTitle>
@@ -36,7 +36,7 @@ export default function ModuleHomeScreen() {
   }
 
   return (
-    <View className="bg-background flex-1">
+    <View className="bg-background flex-1 px-4">
       <Stack.Screen options={{ title: module.name }} />
       <Empty className="flex-1">
         <EmptyMedia>
@@ -45,7 +45,7 @@ export default function ModuleHomeScreen() {
         <View className="items-center gap-2">
           <EmptyTitle>{module.name}</EmptyTitle>
           <EmptyDescription>{module.summary}</EmptyDescription>
-          <Text className="text-muted-foreground mt-2 text-sm">这个模块正在准备中，敬请期待。</Text>
+          <Text className="text-muted-foreground text-sm">这个模块正在准备中，敬请期待。</Text>
         </View>
       </Empty>
     </View>

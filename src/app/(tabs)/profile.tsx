@@ -5,7 +5,7 @@ import { AppSymbol } from "@/components/ui/symbol"
 
 export default function ProfileScreen() {
   return (
-    <View className="bg-background flex-1">
+    <View className="bg-background flex-1 px-4">
       <Empty className="flex-1">
         <EmptyMedia>
           <AppSymbol name={{ ios: "person", android: "person" }} size={22} />

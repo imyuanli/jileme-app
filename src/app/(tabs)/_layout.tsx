@@ -132,7 +132,7 @@ export default function TabsLayout() {
         onDismiss={handleQuickAddDismiss}
       >
         <BottomSheetView>
-          <View className="gap-5 px-5 pb-8 pt-2">
+          <View className="gap-6 px-4 pb-8 pt-2">
             <View className="flex-row items-start justify-between gap-4">
               <View className="min-w-0 flex-1 gap-1">
                 <Text className="text-xl font-semibold">记一下</Text>
