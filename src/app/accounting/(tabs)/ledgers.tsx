@@ -36,7 +36,7 @@ function getErrorMessage(error: unknown, fallback: string) {
 
 function LedgerListSkeleton() {
   return (
-    <View className="gap-4 py-4" accessibilityLabel="正在读取账本">
+    <View className="gap-4 py-4" accessibilityRole="progressbar" accessibilityLabel="正在读取账本">
       <Skeleton className="h-40 w-full rounded-2xl" />
       <Skeleton className="h-40 w-full rounded-2xl" />
     </View>
@@ -135,8 +135,9 @@ export default function AccountingLedgersScreen() {
               <EmptyDescription className="text-destructive">
                 {getErrorMessage(error, "账本读取失败")}
               </EmptyDescription>
-              <Button variant="outline" onPress={() => void mutate()}>
-                <Text>重新尝试</Text>
+              <Button variant="outline" onPress={() => void mutate()} disabled={isValidating}>
+                {isValidating ? <Spinner tone="mutedForeground" /> : null}
+                <Text>{isValidating ? "读取中" : "重新尝试"}</Text>
               </Button>
             </Empty>
           ) : (

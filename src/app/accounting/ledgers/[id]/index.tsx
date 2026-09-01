@@ -65,7 +65,11 @@ function getErrorMessage(error: unknown, fallback: string) {
 
 function LedgerDetailSkeleton() {
   return (
-    <View className="gap-5 px-4 py-4" accessibilityLabel="正在读取账本详情">
+    <View
+      className="gap-5 px-4 py-4"
+      accessibilityRole="progressbar"
+      accessibilityLabel="正在读取账本详情"
+    >
       <View className="flex-row gap-2">
         <Skeleton className="h-16 flex-1 rounded-2xl" />
         <Skeleton className="h-16 flex-1 rounded-2xl" />
@@ -332,8 +336,9 @@ export default function AccountingLedgerDetailScreen() {
               <EmptyDescription className="text-destructive">
                 {getErrorMessage(error, "账本暂时没有打开")}
               </EmptyDescription>
-              <Button variant="outline" onPress={() => void mutate()}>
-                <Text>重新尝试</Text>
+              <Button variant="outline" onPress={() => void mutate()} disabled={isValidating}>
+                {isValidating ? <Spinner tone="mutedForeground" /> : null}
+                <Text>{isValidating ? "读取中" : "重新尝试"}</Text>
               </Button>
             </Empty>
           ) : (

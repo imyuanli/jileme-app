@@ -7,6 +7,7 @@ import { CalendarControls } from "@/components/home/calendar-controls"
 import { Button } from "@/components/ui/button"
 import { Empty, EmptyDescription, EmptyMedia, EmptyTitle } from "@/components/ui/empty"
 import { Skeleton } from "@/components/ui/skeleton"
+import { Spinner } from "@/components/ui/spinner"
 import { AppSymbol } from "@/components/ui/symbol"
 import { Text } from "@/components/ui/text"
 import { getTodayDateKey } from "@/lib/date"
@@ -64,7 +65,7 @@ export default function HomeScreen() {
     { keepPreviousData: true }
   )
   const isToday = selectedDateKey === todayKey
-  const isContentLoading = isLoading || isValidating || data?.dateKey !== selectedDateKey
+  const isContentLoading = isLoading || data?.dateKey !== selectedDateKey
   const blocks = data?.dateKey === selectedDateKey ? data.blocks : []
   const focusBlocks = getBlocksBySlot(blocks, "focus")
   const recordBlocks = getBlocksBySlot(blocks, "records")
@@ -91,7 +92,7 @@ export default function HomeScreen() {
       </View>
 
       <View>
-        {error ? (
+        {error && !data ? (
           <Empty className="min-h-72">
             <EmptyMedia>
               <AppSymbol
@@ -106,12 +107,17 @@ export default function HomeScreen() {
                 {error instanceof Error ? error.message : "请稍后再试。"}
               </EmptyDescription>
             </View>
-            <Button variant="outline" onPress={() => void mutate()}>
-              <Text>重新加载</Text>
+            <Button variant="outline" onPress={() => void mutate()} disabled={isValidating}>
+              {isValidating ? <Spinner tone="mutedForeground" /> : null}
+              <Text>{isValidating ? "读取中" : "重新加载"}</Text>
             </Button>
           </Empty>
         ) : isContentLoading ? (
-          <View className="gap-4">
+          <View
+            className="gap-4"
+            accessibilityRole="progressbar"
+            accessibilityLabel="正在读取首页内容"
+          >
             <Skeleton className="h-24 w-full rounded-3xl" />
             <Skeleton className="h-48 w-full rounded-3xl" />
           </View>
@@ -127,6 +133,22 @@ export default function HomeScreen() {
           </Empty>
         ) : (
           <View className="gap-6">
+            {error && data?.dateKey === selectedDateKey ? (
+              <View className="border-destructive/40 bg-destructive/5 flex-row items-center gap-3 rounded-2xl border p-4">
+                <Text className="text-destructive min-w-0 flex-1 text-sm">
+                  内容更新失败，已保留上次记录。
+                </Text>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onPress={() => void mutate()}
+                  disabled={isValidating}
+                >
+                  {isValidating ? <Spinner tone="mutedForeground" /> : null}
+                  <Text>{isValidating ? "读取中" : "重试"}</Text>
+                </Button>
+              </View>
+            ) : null}
             <HomeSection title={isToday ? "今日焦点" : "当天焦点"} blocks={focusBlocks} />
             <HomeSection title={isToday ? "今日记录" : "当天记录"} blocks={recordBlocks} />
           </View>

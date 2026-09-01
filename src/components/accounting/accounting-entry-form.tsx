@@ -151,6 +151,7 @@ export function AccountingEntryForm({
     data: ledgerOptions,
     error: ledgerError,
     isLoading: ledgerOptionsLoading,
+    isValidating: ledgerOptionsValidating,
     mutate: mutateLedgers,
   } = useSWR<AccountingLedgerOption[]>("/api/accounting/ledgers/options", fetcher.get, {
     shouldRetryOnError: (error) => !(error instanceof RequestError && error.isAuthError),
@@ -636,8 +637,14 @@ export function AccountingEntryForm({
                   <Text className="text-destructive text-sm">
                     {getErrorMessage(ledgerError, "账本读取失败")}
                   </Text>
-                  <Button variant="outline" size="sm" onPress={() => void mutateLedgers()}>
-                    <Text>重新读取</Text>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onPress={() => void mutateLedgers()}
+                    disabled={ledgerOptionsValidating}
+                  >
+                    {ledgerOptionsValidating ? <Spinner tone="mutedForeground" /> : null}
+                    <Text>{ledgerOptionsValidating ? "读取中" : "重新读取"}</Text>
                   </Button>
                 </View>
               ) : writableLedgers.length === 0 ? (

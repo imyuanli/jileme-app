@@ -42,7 +42,11 @@ function getErrorMessage(error: unknown, fallback: string) {
 
 function SettingsSkeleton() {
   return (
-    <View className="gap-5 px-4 py-4" accessibilityLabel="正在读取账本设置">
+    <View
+      className="gap-5 px-4 py-4"
+      accessibilityRole="progressbar"
+      accessibilityLabel="正在读取账本设置"
+    >
       <Skeleton className="h-44 w-full rounded-2xl" />
       <Skeleton className="h-72 w-full rounded-2xl" />
       <Skeleton className="h-48 w-full rounded-2xl" />
@@ -119,7 +123,7 @@ export default function AccountingLedgerSettingsScreen() {
   const { mutate: mutateCache } = useSWRConfig()
   const [memberMessage, setMemberMessage] = useState("")
   const settingsKey = ledgerId ? `/api/accounting/ledgers/settings?ledgerId=${ledgerId}` : null
-  const { data, error, isLoading, mutate } = useSWR<AccountingLedgerSettingsData>(
+  const { data, error, isLoading, isValidating, mutate } = useSWR<AccountingLedgerSettingsData>(
     settingsKey,
     fetcher.get,
     {
@@ -266,8 +270,9 @@ export default function AccountingLedgerSettingsScreen() {
         <Text className="text-destructive text-center text-sm leading-6">
           {getErrorMessage(error, "账本设置暂时没有打开")}
         </Text>
-        <Button variant="outline" onPress={() => void mutate()}>
-          <Text>重新尝试</Text>
+        <Button variant="outline" onPress={() => void mutate()} disabled={isValidating}>
+          {isValidating ? <Spinner tone="mutedForeground" /> : null}
+          <Text>{isValidating ? "读取中" : "重新尝试"}</Text>
         </Button>
       </View>
     )

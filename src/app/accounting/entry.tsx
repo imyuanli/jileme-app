@@ -6,6 +6,7 @@ import useSWR, { useSWRConfig } from "swr"
 import { AccountingEntryForm } from "@/components/accounting/accounting-entry-form"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
+import { Spinner } from "@/components/ui/spinner"
 import { Text } from "@/components/ui/text"
 import { getCurrentMonthKey } from "@/lib/date"
 import { fetcher, RequestError } from "@/lib/request"
@@ -18,7 +19,11 @@ function getErrorMessage(error: unknown, fallback: string) {
 
 function EntryPageSkeleton() {
   return (
-    <View className="gap-4 px-4 py-4" accessibilityLabel="正在读取账单">
+    <View
+      className="gap-4 px-4 py-4"
+      accessibilityRole="progressbar"
+      accessibilityLabel="正在读取账单"
+    >
       <Skeleton className="h-16 w-full rounded-2xl" />
       <Skeleton className="h-11 w-full rounded-2xl" />
       <View className="flex-row flex-wrap gap-2">
@@ -55,6 +60,7 @@ export default function AccountingEntryScreen() {
     data: ledgerDetail,
     error: ledgerDetailError,
     isLoading: isLedgerDetailLoading,
+    isValidating: isLedgerDetailValidating,
     mutate: mutateLedgerDetail,
   } = useSWR<AccountingLedgerDetail>(detailKey, fetcher.get, {
     shouldRetryOnError: (error) => !(error instanceof RequestError && error.isAuthError),
@@ -63,6 +69,7 @@ export default function AccountingEntryScreen() {
     data: overview,
     error: overviewError,
     isLoading: isOverviewLoading,
+    isValidating: isOverviewValidating,
     mutate: mutateOverview,
   } = useSWR<AccountingOverview>(overviewKey, fetcher.get, {
     shouldRetryOnError: (error) => !(error instanceof RequestError && error.isAuthError),
@@ -80,6 +87,7 @@ export default function AccountingEntryScreen() {
     overview?.transactions.find((item) => item.id === transactionId) ??
     null
   const loadError = ledgerDetailError ?? overviewError
+  const isRetrying = ledgerId ? isLedgerDetailValidating : isOverviewValidating
   const isResolvingTransaction =
     isEditing &&
     !loadError &&
@@ -109,8 +117,9 @@ export default function AccountingEntryScreen() {
         <Text className="text-destructive text-center text-sm leading-6">
           {getErrorMessage(loadError, "这笔账暂时无法打开")}
         </Text>
-        <Button variant="outline" onPress={retryTransaction}>
-          <Text>重新尝试</Text>
+        <Button variant="outline" onPress={retryTransaction} disabled={isRetrying}>
+          {isRetrying ? <Spinner tone="mutedForeground" /> : null}
+          <Text>{isRetrying ? "读取中" : "重新尝试"}</Text>
         </Button>
       </View>
     )

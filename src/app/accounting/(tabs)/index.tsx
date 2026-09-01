@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/item"
 import { Progress } from "@/components/ui/progress"
 import { Skeleton } from "@/components/ui/skeleton"
+import { Spinner } from "@/components/ui/spinner"
 import { AppSymbol } from "@/components/ui/symbol"
 import { Text } from "@/components/ui/text"
 import { getAccountingCategoryLabel } from "@/lib/constants/accounting"
@@ -102,7 +103,11 @@ function MonthlySummary({ data }: { data: AccountingOverview | undefined }) {
 
 function MonthlySummarySkeleton() {
   return (
-    <View className="flex-row gap-2" accessibilityLabel="正在读取本月收支概览">
+    <View
+      className="flex-row gap-2"
+      accessibilityRole="progressbar"
+      accessibilityLabel="正在读取本月收支概览"
+    >
       {Array.from({ length: 3 }, (_, index) => (
         <View key={index} className="bg-card min-w-0 flex-1 gap-2 rounded-2xl p-3">
           <Skeleton className="h-3 w-10" />
@@ -115,7 +120,11 @@ function MonthlySummarySkeleton() {
 
 function TransactionListSkeleton() {
   return (
-    <View className="gap-3 py-3" accessibilityLabel="正在读取这个月的账单">
+    <View
+      className="gap-3 py-3"
+      accessibilityRole="progressbar"
+      accessibilityLabel="正在读取这个月的账单"
+    >
       <Skeleton className="h-5 w-28" />
       <Skeleton className="h-16 w-full rounded-2xl" />
       <Skeleton className="h-16 w-full rounded-2xl" />
@@ -240,7 +249,11 @@ export default function AccountingScreen() {
 
       {isCurrentMonth && (isLoading || data) ? (
         isLoading ? (
-          <Skeleton className="h-28 w-full rounded-2xl" />
+          <Skeleton
+            className="h-28 w-full rounded-2xl"
+            accessibilityRole="progressbar"
+            accessibilityLabel="正在读取预算"
+          />
         ) : (
           <BudgetSummary
             budget={data?.budget}
@@ -252,8 +265,9 @@ export default function AccountingScreen() {
       {error && data ? (
         <View className="border-destructive/40 bg-destructive/5 flex-row items-center gap-3 rounded-2xl border p-4">
           <Text className="text-destructive min-w-0 flex-1 text-sm">{getErrorMessage(error)}</Text>
-          <Button variant="outline" size="sm" onPress={() => void mutate()}>
-            <Text>重试</Text>
+          <Button variant="outline" size="sm" onPress={() => void mutate()} disabled={isValidating}>
+            {isValidating ? <Spinner tone="mutedForeground" /> : null}
+            <Text>{isValidating ? "读取中" : "重试"}</Text>
           </Button>
         </View>
       ) : null}
@@ -314,8 +328,10 @@ export default function AccountingScreen() {
                 variant="outline"
                 onPress={() => void mutate()}
                 accessibilityLabel="重新读取账单"
+                disabled={isValidating}
               >
-                <Text>重新尝试</Text>
+                {isValidating ? <Spinner tone="mutedForeground" /> : null}
+                <Text>{isValidating ? "读取中" : "重新尝试"}</Text>
               </Button>
             </Empty>
           ) : (

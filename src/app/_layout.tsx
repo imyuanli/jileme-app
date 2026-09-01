@@ -28,10 +28,14 @@ const TAB_TITLES: Record<string, string> = {
 }
 
 function SessionGate({ children }: SessionGateProps) {
-  const { data, error, isLoading, mutate } = useSWR<CurrentUser>("/api/me", fetcher.get, {
-    shouldRetryOnError: (requestError) =>
-      !(requestError instanceof RequestError && requestError.isAuthError),
-  })
+  const { data, error, isLoading, isValidating, mutate } = useSWR<CurrentUser>(
+    "/api/me",
+    fetcher.get,
+    {
+      shouldRetryOnError: (requestError) =>
+        !(requestError instanceof RequestError && requestError.isAuthError),
+    }
+  )
 
   if (isLoading) {
     return (
@@ -51,8 +55,13 @@ function SessionGate({ children }: SessionGateProps) {
           <Text className="text-center text-xl font-semibold">连接没有成功</Text>
           <Text className="text-muted-foreground text-center text-sm leading-6">{message}</Text>
         </View>
-        <Button onPress={() => void mutate()} accessibilityLabel="重新检查登录状态">
-          <Text>重新尝试</Text>
+        <Button
+          onPress={() => void mutate()}
+          accessibilityLabel="重新检查登录状态"
+          disabled={isValidating}
+        >
+          {isValidating ? <Spinner tone="primaryForeground" /> : null}
+          <Text>{isValidating ? "检查中" : "重新尝试"}</Text>
         </Button>
       </View>
     )
