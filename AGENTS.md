@@ -86,8 +86,10 @@
 - Picker、Switch、Menu、Sheet 等需要系统级原生体验的控件，先查阅 SDK 56 文档并评估 `@expo/ui` 是否有合适实现，再考虑 React Native 内置或新增社区依赖。
 - 不为了统一表面形式重复包装已经具备平台设计语言的原生控件。
 - 页面、`ScrollView`、`FlatList`、`SectionList` 和 Bottom Sheet 的内容统一使用 16pt（`px-4`）水平轨道；不得在不同页面自行改用 `px-5`、`px-6` 或 `px-8` 作为页面边缘间距。
+- 页面内容根容器统一使用 `p-4`；滚动容器将页面边缘 padding 放在 `contentContainerClassName` 或 `contentContainerStyle`，不得让一级 section 另行承担页面顶部、底部或水平轨道。
 - `ScrollView` 的页面 padding 和页面级 `gap` 必须设置在 `contentContainerClassName` 或 `contentContainerStyle`；`FlatList`、`SectionList` 的统一边距与节奏由列表内容容器承担，`renderItem` 不得使用 `mx-*`、`mb-*` 为同级列表项制造间距。
 - 页面一级区块统一由父容器使用 `gap-6`，section 内部普通内容使用 `gap-4`，标题与说明等紧密内容使用 `gap-1` 或 `gap-2`；不得通过相邻 section 自带的 `mt-*`、`mb-*` 叠加页面节奏。
+- Header 统一使用主题 Stack 配置、居中标题和语义尺寸按钮；密集导航使用 `icon-xs`，独立图标操作使用 `icon-sm`，文字操作使用 `sm`，同一操作区保持一致的 `gap`。
 - loading、empty、error 和正常内容必须共享同一条 16pt 页面对齐轴。全宽背景或分隔线可以延伸到屏幕边缘，但其真实内容仍须对齐唯一的 16pt 内容轨道。
 - 禁止使用负 margin 抵消页面 padding；确有不可替代的视觉需求时，必须限制在局部并用注释说明原因、约束和影响。
 - Card、Button、Input、Item 等组件内部 padding 属于组件规格，不得转移到页面，也不得由调用处重复定义。

@@ -5,7 +5,7 @@ import { AppSymbol } from "@/components/ui/symbol"
 
 export default function InsightsScreen() {
   return (
-    <View className="bg-background flex-1 px-4">
+    <View className="bg-background flex-1 p-4">
       <Empty className="flex-1">
         <EmptyMedia>
           <AppSymbol name={{ ios: "chart.bar", android: "insights" }} size={22} />

@@ -121,7 +121,7 @@ function MonthlySummarySkeleton() {
 function TransactionListSkeleton() {
   return (
     <View
-      className="gap-3 py-3"
+      className="gap-3"
       accessibilityRole="progressbar"
       accessibilityLabel="正在读取这个月的账单"
     >
@@ -244,7 +244,7 @@ export default function AccountingScreen() {
   }, [data?.transactions])
 
   const listHeader = (
-    <View className="gap-5 pb-5 pt-3">
+    <View className="gap-5">
       {isLoading ? <MonthlySummarySkeleton /> : data ? <MonthlySummary data={data} /> : null}
 
       {isCurrentMonth && (isLoading || data) ? (
@@ -306,7 +306,7 @@ export default function AccountingScreen() {
         sections={sections}
         keyExtractor={(transaction) => transaction.id}
         contentInsetAdjustmentBehavior="automatic"
-        contentContainerClassName="gap-2 px-4 pb-8"
+        contentContainerClassName="gap-2 p-4"
         stickySectionHeadersEnabled
         refreshing={Boolean(data) && isValidating}
         onRefresh={() => void mutate()}

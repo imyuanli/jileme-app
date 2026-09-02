@@ -190,7 +190,7 @@ export const AccountingBudgetSheet = forwardRef<
       onDismiss={() => setErrorMessage(null)}
     >
       <BottomSheetView>
-        <View className="gap-6 px-4 pb-10 pt-2">
+        <View className="gap-6 p-4">
           <View className="flex-row items-start justify-between gap-4">
             <View className="min-w-0 flex-1 gap-1">
               <Text className="text-xl font-semibold">{budget ? "修改预算" : "设置预算"}</Text>

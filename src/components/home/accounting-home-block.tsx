@@ -25,7 +25,7 @@ const money = new Intl.NumberFormat("zh-CN", {
 export function AccountingHomeBlock({ block }: { block: AccountingHomeBlockData }) {
   const colorScheme = useColorScheme() === "dark" ? "dark" : "light"
   return (
-    <View className="gap-4 py-5" accessibilityLabel="记账摘要">
+    <View className="gap-4 py-4" accessibilityLabel="记账摘要">
       <View className="flex-row items-start justify-between gap-3">
         <View className="min-w-0 flex-1 flex-row items-center gap-3">
           <View className="bg-muted size-10 items-center justify-center rounded-2xl">

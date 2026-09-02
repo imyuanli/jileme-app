@@ -81,3 +81,13 @@ export const NAV_THEME: Record<"light" | "dark", Theme> = {
     },
   },
 }
+
+export function getStackScreenOptions(colorScheme: "light" | "dark") {
+  return {
+    headerStyle: { backgroundColor: THEME[colorScheme].background },
+    headerTintColor: THEME[colorScheme].foreground,
+    headerShadowVisible: false,
+    headerTitleAlign: "center" as const,
+    headerBackButtonDisplayMode: "minimal" as const,
+  }
+}

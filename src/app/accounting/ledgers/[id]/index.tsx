@@ -65,11 +65,7 @@ function getErrorMessage(error: unknown, fallback: string) {
 
 function LedgerDetailSkeleton() {
   return (
-    <View
-      className="gap-5 px-4 py-4"
-      accessibilityRole="progressbar"
-      accessibilityLabel="正在读取账本详情"
-    >
+    <View className="gap-5" accessibilityRole="progressbar" accessibilityLabel="正在读取账本详情">
       <View className="flex-row gap-2">
         <Skeleton className="h-16 flex-1 rounded-2xl" />
         <Skeleton className="h-16 flex-1 rounded-2xl" />
@@ -213,7 +209,7 @@ export default function AccountingLedgerDetailScreen() {
   }
 
   const listHeader = data ? (
-    <View className="gap-5 pb-5 pt-3">
+    <View className="gap-5">
       <View className="flex-row gap-2">
         {[
           { label: "结余", value: data.incomeCents - data.expenseCents, primary: false },
@@ -322,7 +318,7 @@ export default function AccountingLedgerDetailScreen() {
         sections={sections}
         keyExtractor={(transaction) => transaction.id}
         contentInsetAdjustmentBehavior="automatic"
-        contentContainerClassName="gap-2 px-4 pb-8"
+        contentContainerClassName="gap-2 p-4"
         stickySectionHeadersEnabled
         refreshing={Boolean(data) && isValidating}
         onRefresh={() => void mutate()}

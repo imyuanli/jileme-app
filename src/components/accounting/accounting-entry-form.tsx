@@ -130,6 +130,7 @@ export function AccountingEntryForm({
       ledgerIds,
     }
   })
+  const [formBaseline, setFormBaseline] = useState(initialValues)
   const [transaction] = useState<AccountingTransaction | null>(initialTransaction)
   const [type, setType] = useState<AccountingType>(initialValues.type)
   const [amount, setAmount] = useState(initialValues.amount)
@@ -179,12 +180,12 @@ export function AccountingEntryForm({
   const isSaving = isCreating || isUpdating
   const isBusy = isSaving || isDeleting
   const isDirty =
-    type !== initialValues.type ||
-    amount !== initialValues.amount ||
-    category !== initialValues.category ||
-    note !== initialValues.note ||
-    occurredOn !== initialValues.occurredOn ||
-    !haveSameLedgerIds(selectedLedgerIds, initialValues.ledgerIds)
+    type !== formBaseline.type ||
+    amount !== formBaseline.amount ||
+    category !== formBaseline.category ||
+    note !== formBaseline.note ||
+    occurredOn !== formBaseline.occurredOn ||
+    !haveSameLedgerIds(selectedLedgerIds, formBaseline.ledgerIds)
   const writableLedgers = ledgerOptions?.filter((ledger) => ledger.writable) ?? []
   const lockedLedger = lockedLedgerId
     ? writableLedgers.find((ledger) => ledger.id === lockedLedgerId)
@@ -197,6 +198,9 @@ export function AccountingEntryForm({
         .filter((item): item is (typeof ACCOUNTING_CATEGORIES)[AccountingType][number] =>
           Boolean(item)
         )
+  const shouldShowMore =
+    !showAllCategories && visibleCategories.length < ACCOUNTING_CATEGORIES[type].length
+  const categoryRowCount = Math.ceil((visibleCategories.length + (shouldShowMore ? 1 : 0)) / 5)
 
   usePreventRemove(isDirty && !canLeave, ({ data }) => {
     if (isBusy) {
@@ -276,12 +280,24 @@ export function AccountingEntryForm({
   }
 
   function resetEntry() {
+    const resetDate = getTodayDateKey()
+    const resetValues = {
+      type,
+      amount: "",
+      category: ACCOUNTING_CATEGORIES[type][0].code,
+      note: "",
+      occurredOn: resetDate,
+      ledgerIds: [...initialValues.ledgerIds],
+    }
+
     setAmount("")
-    setCategory(ACCOUNTING_CATEGORIES[type][0].code)
+    setCategory(resetValues.category)
     setNote("")
-    setOccurredOn(getTodayDateKey())
-    setDraftOccurredOn(getTodayDateKey())
-    setSelectedLedgerIds(initialValues.ledgerIds)
+    setOccurredOn(resetDate)
+    setDraftOccurredOn(resetDate)
+    setSelectedLedgerIds(resetValues.ledgerIds)
+    setShowAllCategories(false)
+    setFormBaseline(resetValues)
     setErrorMessage(null)
   }
 
@@ -368,7 +384,11 @@ export function AccountingEntryForm({
       }
 
       await refreshAccountingData()
-      setCanLeave(true)
+      if (transaction) {
+        setCanLeave(true)
+      } else {
+        resetEntry()
+      }
     } catch (error) {
       await refreshSessionIfNeeded(error)
       setErrorMessage(getErrorMessage(error, "保存失败，请稍后再试"))
@@ -404,29 +424,30 @@ export function AccountingEntryForm({
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"
         keyboardShouldPersistTaps="handled"
-        contentContainerClassName="gap-6 px-4 pb-6"
+        contentContainerClassName="gap-8 p-4"
       >
-        <View className="bg-background pb-6 pt-5">
-          <Text className="text-muted-foreground text-base">交易金额</Text>
-          <View className="flex-row items-center gap-4 pt-3">
-            <Text className="text-5xl font-medium leading-[72px]">¥</Text>
+        <View className="gap-3">
+          <View>
+            <Text className="text-base">交易金额</Text>
+          </View>
+          <View className="relative border-border flex-row items-center border-b pb-2">
             <Input
               value={amount}
               onChangeText={setAmount}
               inputMode="decimal"
-              keyboardType="decimal-pad"
               placeholder="0.00"
               size="lg"
+              variant="plain"
               maxLength={12}
               editable={!isBusy}
               accessibilityLabel="交易金额"
-              variant="plain"
-              className="flex-1 text-5xl font-medium leading-[72px]"
+              className="flex-1 pl-7 text-4xl"
             />
+            <Text className="absolute left-0 top-1/2 -translate-y-1/2 text-3xl">¥</Text>
           </View>
         </View>
 
-        <View className="bg-muted/30 gap-4 py-5">
+        <View className="gap-3">
           <ToggleGroup
             type="single"
             value={type}
@@ -445,81 +466,104 @@ export function AccountingEntryForm({
             </ToggleGroupItem>
           </ToggleGroup>
 
-          <View className="flex-row flex-wrap justify-between gap-4">
-            {visibleCategories.map((item) => {
-              const selected = category === item.code
-              const label = ENTRY_CATEGORY_LABELS[item.code] ?? item.label
+          <View className="gap-3">
+            {Array.from({ length: categoryRowCount }, (_, rowIndex) => {
+              const rowItems = visibleCategories.slice(rowIndex * 5, rowIndex * 5 + 5)
+              const isLastDefaultRow = shouldShowMore && rowIndex === categoryRowCount - 1
+              const row = isLastDefaultRow
+                ? [...rowItems, { code: "__more__", label: "更多" }]
+                : rowItems
 
               return (
-                <Pressable
-                  key={item.code}
-                  className={cn("w-[18%] items-center gap-2", isBusy && "opacity-50")}
-                  onPress={() => setCategory(item.code)}
-                  disabled={isBusy}
-                  accessibilityRole="radio"
-                  accessibilityState={{ checked: selected, disabled: isBusy }}
-                  accessibilityLabel={`${label}分类`}
-                >
-                  <View
-                    className={cn(
-                      "bg-background h-12 w-12 items-center justify-center rounded-full",
-                      selected && "bg-primary"
-                    )}
-                  >
-                    <AccountingCategoryIcon
-                      category={item.code}
-                      type={type}
-                      size={23}
-                      color={
-                        selected
-                          ? THEME[colorScheme].primaryForeground
-                          : THEME[colorScheme].foreground
-                      }
-                    />
-                  </View>
-                  <Text className="text-center text-xs" numberOfLines={1}>
-                    {label}
-                  </Text>
-                </Pressable>
+                <View key={`category-row-${rowIndex}`} className="flex-row gap-4">
+                  {Array.from({ length: 5 }, (_, cellIndex) => {
+                    const item = row[cellIndex]
+                    if (!item) return <View key={`category-cell-${cellIndex}`} className="flex-1" />
+
+                    if (item.code === "__more__") {
+                      return (
+                        <Pressable
+                          key={item.code}
+                          className={cn("flex-1 items-center gap-1", isBusy && "opacity-50")}
+                          onPress={() => setShowAllCategories(true)}
+                          disabled={isBusy}
+                          accessibilityRole="button"
+                          accessibilityLabel="查看更多分类"
+                        >
+                          <View className="bg-background p-2 items-center justify-center rounded-full">
+                            <AppSymbol
+                              name={{ ios: "ellipsis", android: "more_horiz" }}
+                              size={23}
+                            />
+                          </View>
+                          <Text className="text-center text-xs">更多</Text>
+                        </Pressable>
+                      )
+                    }
+
+                    const selected = category === item.code
+                    const label = ENTRY_CATEGORY_LABELS[item.code] ?? item.label
+
+                    return (
+                      <Pressable
+                        key={item.code}
+                        className={cn("flex-1 items-center gap-1", isBusy && "opacity-50")}
+                        onPress={() => setCategory(item.code)}
+                        disabled={isBusy}
+                        accessibilityRole="radio"
+                        accessibilityState={{ checked: selected, disabled: isBusy }}
+                        accessibilityLabel={`${label}分类`}
+                      >
+                        <View
+                          className={cn(
+                            "bg-background items-center justify-center rounded-full p-2",
+                            selected && "bg-primary"
+                          )}
+                        >
+                          <AccountingCategoryIcon
+                            category={item.code}
+                            type={type}
+                            size={24}
+                            color={
+                              selected
+                                ? THEME[colorScheme].primaryForeground
+                                : THEME[colorScheme].foreground
+                            }
+                          />
+                        </View>
+                        <Text className="text-center text-xs" numberOfLines={1}>
+                          {label}
+                        </Text>
+                      </Pressable>
+                    )
+                  })}
+                </View>
               )
             })}
-            {!showAllCategories ? (
-              <Pressable
-                className="w-[18%] items-center gap-2"
-                onPress={() => setShowAllCategories(true)}
-                accessibilityRole="button"
-                accessibilityLabel="查看更多分类"
-              >
-                <View className="bg-background h-12 w-12 items-center justify-center rounded-full">
-                  <AppSymbol name={{ ios: "ellipsis", android: "more_horiz" }} size={23} />
-                </View>
-                <Text className="text-center text-xs">更多</Text>
-              </Pressable>
-            ) : null}
           </View>
         </View>
 
-        <View className="gap-6 py-6">
-          <View className="gap-2">
-            <Text className="text-base">备注</Text>
-            <View className="border-border flex-row items-center border-b pb-2">
-              <Input
-                value={note}
-                onChangeText={setNote}
-                placeholder="记录点什么…"
-                maxLength={200}
-                editable={!isBusy}
-                accessibilityLabel="账单备注"
-                variant="plain"
-                className="flex-1"
-              />
-              <AppSymbol name={{ ios: "camera", android: "photo_camera" }} size={23} />
-            </View>
+        <View className="gap-1">
+          <Text className="text-base">备注</Text>
+          <View className="border-border flex-row items-center border-b pb-2">
+            <Input
+              value={note}
+              onChangeText={setNote}
+              size="lg"
+              placeholder="记录点什么…"
+              maxLength={200}
+              editable={!isBusy}
+              accessibilityLabel="账单备注"
+              variant="plain"
+              className="flex-1"
+            />
           </View>
+        </View>
 
-          <View className="bg-muted/30 flex-row flex-wrap gap-3 py-4">
+        <View className="gap-3">
+          <View className="flex-row flex-wrap gap-3">
             <Button
-              variant="outline"
+              variant="soft"
               size="sm"
               onPress={openDatePicker}
               disabled={isBusy}
@@ -528,7 +572,7 @@ export function AccountingEntryForm({
               <Text>{formatEntryDateLabel(occurredOn)}</Text>
             </Button>
             <Button
-              variant="outline"
+              variant="soft"
               size="sm"
               onPress={() => ledgerPickerSheetRef.current?.present()}
               disabled={isBusy || Boolean(lockedLedgerId)}
@@ -570,8 +614,8 @@ export function AccountingEntryForm({
         onDismiss={() => setDraftOccurredOn(occurredOn)}
       >
         <BottomSheetView>
-          <View className="pb-2 pt-1">
-            <View className="flex-row items-center justify-between px-4">
+          <View className="gap-4 p-4">
+            <View className="flex-row items-center justify-between">
               <Button
                 variant="ghost"
                 size="sm"
@@ -613,8 +657,8 @@ export function AccountingEntryForm({
           backgroundStyle={{ backgroundColor: THEME[colorScheme].background }}
         >
           <BottomSheetView>
-            <View className="pb-8 pt-1">
-              <View className="flex-row items-center justify-between px-4 pb-3">
+            <View className="gap-4 p-4">
+              <View className="flex-row items-center justify-between pb-3">
                 <View className="w-16" />
                 <Text className="text-lg font-semibold">选择账本</Text>
                 <Button
@@ -628,12 +672,12 @@ export function AccountingEntryForm({
               </View>
 
               {ledgerOptionsLoading ? (
-                <View className="min-h-20 flex-row items-center justify-center gap-3 px-4">
+                <View className="min-h-20 flex-row items-center justify-center gap-3">
                   <Spinner />
                   <Text className="text-muted-foreground text-sm">正在读取账本...</Text>
                 </View>
               ) : ledgerError ? (
-                <View className="items-center gap-3 px-4 py-5">
+                <View className="items-center gap-3">
                   <Text className="text-destructive text-sm">
                     {getErrorMessage(ledgerError, "账本读取失败")}
                   </Text>
@@ -648,7 +692,7 @@ export function AccountingEntryForm({
                   </Button>
                 </View>
               ) : writableLedgers.length === 0 ? (
-                <View className="min-h-20 justify-center px-4">
+                <View className="min-h-20 justify-center">
                   <Text className="text-muted-foreground text-center text-sm">
                     还没有可加入的账本，这笔账会保留在个人明细里。
                   </Text>
@@ -661,7 +705,7 @@ export function AccountingEntryForm({
                     <Pressable
                       key={ledger.id}
                       className={cn(
-                        "border-border min-h-16 flex-row items-center gap-3 border-t px-4",
+                        "border-border min-h-16 flex-row items-center gap-3 border-t",
                         index === writableLedgers.length - 1 && "border-b",
                         isBusy && "opacity-50"
                       )}

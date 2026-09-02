@@ -36,7 +36,7 @@ function getErrorMessage(error: unknown, fallback: string) {
 
 function LedgerListSkeleton() {
   return (
-    <View className="gap-4 py-4" accessibilityRole="progressbar" accessibilityLabel="正在读取账本">
+    <View className="gap-4" accessibilityRole="progressbar" accessibilityLabel="正在读取账本">
       <Skeleton className="h-40 w-full rounded-2xl" />
       <Skeleton className="h-40 w-full rounded-2xl" />
     </View>
@@ -117,7 +117,7 @@ export default function AccountingLedgersScreen() {
         data={data ?? []}
         keyExtractor={(ledger) => ledger.id}
         contentInsetAdjustmentBehavior="automatic"
-        contentContainerClassName="gap-3 px-4 pb-8"
+        contentContainerClassName="gap-3 p-4"
         refreshing={Boolean(data) && isValidating}
         onRefresh={() => void mutate()}
         ListEmptyComponent={
@@ -222,7 +222,7 @@ export default function AccountingLedgersScreen() {
         onDismiss={() => setCreateMessage("")}
       >
         <BottomSheetView>
-          <View className="gap-6 px-4 pb-10 pt-2">
+          <View className="gap-6 p-4">
             <View className="flex-row items-start justify-between gap-4">
               <View className="min-w-0 flex-1 gap-1">
                 <Text className="text-xl font-semibold">新建账本</Text>

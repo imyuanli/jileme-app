@@ -30,7 +30,7 @@ export default function ModulesScreen() {
     <ScrollView
       className="bg-background flex-1"
       contentInsetAdjustmentBehavior="automatic"
-      contentContainerClassName="gap-6 px-4 pb-8 pt-4"
+      contentContainerClassName="gap-6 p-4"
     >
       <View className="gap-1">
         <Text className="text-2xl font-semibold">记录模块</Text>

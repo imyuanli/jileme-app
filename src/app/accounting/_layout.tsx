@@ -3,7 +3,7 @@ import { useColorScheme } from "react-native"
 
 import { Button } from "@/components/ui/button"
 import { AppSymbol } from "@/components/ui/symbol"
-import { THEME } from "@/lib/theme"
+import { getStackScreenOptions } from "@/lib/theme"
 
 export const unstable_settings = {
   initialRouteName: "(tabs)",
@@ -23,15 +23,7 @@ export default function AccountingLayout() {
   }
 
   return (
-    <Stack
-      screenOptions={{
-        headerStyle: { backgroundColor: THEME[colorScheme].background },
-        headerTintColor: THEME[colorScheme].foreground,
-        headerShadowVisible: false,
-        headerTitleAlign: "center",
-        headerBackButtonDisplayMode: "minimal",
-      }}
-    >
+    <Stack screenOptions={getStackScreenOptions(colorScheme)}>
       <Stack.Screen
         name="(tabs)"
         options={{

@@ -80,10 +80,10 @@ export default function HomeScreen() {
     <ScrollView
       className="bg-background flex-1"
       contentInsetAdjustmentBehavior="automatic"
-      contentContainerClassName="gap-6 px-4 pb-8 pt-4"
+      contentContainerClassName="gap-6 p-4"
       contentContainerStyle={{ flexGrow: 1 }}
     >
-      <View className="border-border border-b pb-4">
+      <View className="border-border border-b">
         <CalendarControls
           onDateChange={setSelectedDateKey}
           selectedDateKey={selectedDateKey}

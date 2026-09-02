@@ -391,7 +391,7 @@ export default function LoginScreen() {
         behavior={Platform.OS === "ios" ? "padding" : undefined}
       >
         <ScrollView
-          contentContainerClassName="flex-grow px-4 py-10"
+          contentContainerClassName="flex-grow p-4"
           contentContainerStyle={{ flexGrow: 1 }}
           keyboardShouldPersistTaps="handled"
           automaticallyAdjustKeyboardInsets

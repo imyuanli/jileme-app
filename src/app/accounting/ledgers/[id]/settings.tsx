@@ -43,7 +43,7 @@ function getErrorMessage(error: unknown, fallback: string) {
 function SettingsSkeleton() {
   return (
     <View
-      className="gap-5 px-4 py-4"
+      className="gap-5 p-4"
       accessibilityRole="progressbar"
       accessibilityLabel="正在读取账本设置"
     >
@@ -265,7 +265,7 @@ export default function AccountingLedgerSettingsScreen() {
 
   if (error || !data || !ledgerId) {
     return (
-      <View className="bg-background flex-1 items-center justify-center gap-4 px-4">
+      <View className="bg-background flex-1 items-center justify-center gap-4 p-4">
         <Stack.Screen options={{ title: "账本设置" }} />
         <Text className="text-destructive text-center text-sm leading-6">
           {getErrorMessage(error, "账本设置暂时没有打开")}
@@ -287,7 +287,7 @@ export default function AccountingLedgerSettingsScreen() {
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"
         keyboardShouldPersistTaps="handled"
-        contentContainerClassName="gap-6 px-4 pb-8 pt-4"
+        contentContainerClassName="gap-6 p-4"
       >
         <View className="bg-card items-center gap-3 rounded-3xl px-4 py-6">
           <View className="flex-row items-center justify-center gap-2">

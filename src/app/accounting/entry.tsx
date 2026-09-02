@@ -19,11 +19,7 @@ function getErrorMessage(error: unknown, fallback: string) {
 
 function EntryPageSkeleton() {
   return (
-    <View
-      className="gap-4 px-4 py-4"
-      accessibilityRole="progressbar"
-      accessibilityLabel="正在读取账单"
-    >
+    <View className="gap-4 p-4" accessibilityRole="progressbar" accessibilityLabel="正在读取账单">
       <Skeleton className="h-16 w-full rounded-2xl" />
       <Skeleton className="h-11 w-full rounded-2xl" />
       <View className="flex-row flex-wrap gap-2">
@@ -112,7 +108,7 @@ export default function AccountingEntryScreen() {
 
   if (isEditing && (loadError || !transaction)) {
     return (
-      <View className="bg-background flex-1 items-center justify-center gap-4 px-4">
+      <View className="bg-background flex-1 items-center justify-center gap-4 p-4">
         <Stack.Screen options={{ title: "编辑账单" }} />
         <Text className="text-destructive text-center text-sm leading-6">
           {getErrorMessage(loadError, "这笔账暂时无法打开")}
