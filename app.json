@@ -3,7 +3,7 @@
     "name": "记了么",
     "slug": "jileme",
     "description": "记了么生活记录移动客户端",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./assets/images/logo.png",
     "scheme": "jileme",
