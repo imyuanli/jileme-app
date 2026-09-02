@@ -48,6 +48,8 @@ type AccountingEntryFormProps = {
   onCompleted?: () => void
 }
 
+type CreateSubmitMode = "continue" | "complete"
+
 function getErrorMessage(error: unknown, fallback: string) {
   return error instanceof Error ? error.message : fallback
 }
@@ -143,6 +145,7 @@ export function AccountingEntryForm({
   const [showAllCategories, setShowAllCategories] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [canLeave, setCanLeave] = useState(false)
+  const [savingMode, setSavingMode] = useState<CreateSubmitMode | null>(null)
   const datePickerSheetRef = useRef<BottomSheetModal>(null)
   const ledgerPickerSheetRef = useRef<BottomSheetModal>(null)
   const pendingNavigationActionRef = useRef<NavigationAction | null>(null)
@@ -363,8 +366,9 @@ export function AccountingEntryForm({
     }
   }
 
-  async function handleSave() {
+  async function handleSave(mode: CreateSubmitMode = "complete") {
     setErrorMessage(null)
+    setSavingMode(mode)
 
     try {
       const input = validateInput()
@@ -384,7 +388,7 @@ export function AccountingEntryForm({
       }
 
       await refreshAccountingData()
-      if (transaction) {
+      if (transaction || mode === "complete") {
         setCanLeave(true)
       } else {
         resetEntry()
@@ -392,6 +396,8 @@ export function AccountingEntryForm({
     } catch (error) {
       await refreshSessionIfNeeded(error)
       setErrorMessage(getErrorMessage(error, "保存失败，请稍后再试"))
+    } finally {
+      setSavingMode(null)
     }
   }
 
@@ -756,11 +762,12 @@ export function AccountingEntryForm({
           <Button
             variant="ghost"
             size="sm"
-            onPress={resetEntry}
+            onPress={() => void handleSave("continue")}
             disabled={isBusy}
             accessibilityLabel="再记一笔"
           >
-            <Text>再记一笔</Text>
+            {isSaving && savingMode === "continue" ? <Spinner tone="primaryForeground" /> : null}
+            <Text>{isSaving && savingMode === "continue" ? "保存中" : "再记一笔"}</Text>
           </Button>
         ) : null}
         <Button
@@ -770,8 +777,14 @@ export function AccountingEntryForm({
           disabled={isBusy || ledgerSelectionUnavailable}
           accessibilityLabel={transaction ? "保存账单修改" : "保存账单"}
         >
-          {isSaving ? <Spinner tone="primaryForeground" /> : null}
-          <Text>{isSaving ? "保存中" : transaction ? "保存修改" : "确定添加"}</Text>
+          {isSaving && savingMode === "complete" ? <Spinner tone="primaryForeground" /> : null}
+          <Text>
+            {isSaving && savingMode === "complete"
+              ? "保存中"
+              : transaction
+                ? "保存修改"
+                : "确定添加"}
+          </Text>
         </Button>
       </View>
     </KeyboardAvoidingView>
